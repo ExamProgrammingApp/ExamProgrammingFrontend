@@ -1,6 +1,6 @@
 import React from "react";
 
-const Exams = () => {
+const Auth = () => {
   return (
     <div>
       <h1>Exams</h1>
@@ -43,4 +43,4 @@ const Exams = () => {
   );
 };
 
-export default Exams;
+export default Auth;
