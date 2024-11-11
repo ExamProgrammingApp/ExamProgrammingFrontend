@@ -7,8 +7,10 @@ import logo from "../images/logo.png";
 
 const SideNavbar = () => {
   const location = useLocation();
+  //Path without navbar
+  if (location.pathname === "/auth") return null;
+
   return (
-    // <div className="sticky top-0 flex flex-col min-w-24 h-screen bg-blue-1 justify-start">
     <div className="flex flex-col items-center space-y-6 sticky top-0 min-w-24 h-screen bg-blue-1 justify-start">
       <img src={logo} alt="Logo" className="w-24" />
       <Link to="/exams">
@@ -36,7 +38,6 @@ const SideNavbar = () => {
         </div>
       </Link>
     </div>
-    // </div>
   );
 };
 

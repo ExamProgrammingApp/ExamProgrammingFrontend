@@ -11,9 +11,6 @@ import Auth from "./Auth";
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
       <div className="flex min-h-screen">
         <SideNavbar />
         <div className="flex flex-col w-full">
@@ -25,6 +22,7 @@ function App() {
                 <Route path="/exams" element={<Exams />} />
                 <Route path="/program_exam" element={<ProgramExam />} />
                 <Route path="/modify_exam" element={<ModifyExam />} />
+                <Route path="/auth" element={<Auth />} />
               </Routes>
             </div>
           </Content>

@@ -1,43 +1,60 @@
 import React from "react";
+import AuthImage from "./images/auth_img.png";
+import {useNavigate} from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
+
+  const signIn = () => {
+    navigate("/exams");
+  };
+
+  const login = () => {
+    navigate("/exams");
+  };
+
+  const googleLogin = () => {
+    navigate("/exams");
+  };
+
   return (
-    <div>
-      <h1>Exams</h1>
-      <div className="h-96 w-96 flex items-center justify-center bg-red-500">
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatem amet quas iste
-          aperiam corrupti eligendi tempore repellendus nemo at voluptate, cum perspiciatis! Ratione
-          hic, corrupti sapiente fugiat quia voluptas a!
-        </p>
+    <div className="h-screen w-screen bg-blue-1 flex flex-row p-10 space-x-5 ">
+      <div className="h-full bg-gray-1 flex-1 content-center justify-items-center p-5 overflow-hidden">
+        <img
+          src={AuthImage}
+          alt="A building"
+          className="h-full w-full max-h-[500px] max-w-[500px]"
+        />
       </div>
-      <div className="h-96 w-96 flex items-center justify-center bg-red-500">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi perspiciatis voluptatum
-          rerum temporibus quibusdam sint, earum veritatis repellat aspernatur provident doloremque
-          quod, molestias porro optio nulla quae tempora! Eveniet, perspiciatis.
-        </p>
-      </div>
-      <div className="h-96 w-96 flex items-center justify-center bg-red-500">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab perspiciatis dolore pariatur
-          placeat quasi optio minima sapiente ex, obcaecati hic sit cum in provident libero labore
-          tempora, quae illo rem!
-        </p>
-      </div>
-      <div className="h-96 w-96 flex items-center justify-center bg-red-500">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla dolore suscipit ut iure
-          consectetur similique tempore sequi optio aut. Velit tenetur, optio et voluptatem beatae
-          assumenda voluptate unde iste fuga?
-        </p>
-      </div>
-      <div className="h-96 w-96 flex items-center justify-center bg-red-500">
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Magnam, explicabo provident
-          facilis ullam saepe cum eveniet. Iure facilis reiciendis temporibus veniam rem odit ex
-          nisi quisquam quas. Suscipit, nesciunt omnis!
-        </p>
+      <div className=" flex flex-1 justify-center ">
+        <div className="flex flex-col items-center justify-center space-y-6 p-10 rounded-lg w-full h-full flex-1 max-w-[500px]">
+          <button
+            className="bg-orange-500 text-white text-lg font-semibold py-3 px-6 rounded-md hover:bg-orange-600"
+            onClick={() => signIn()}>
+            Sign in
+          </button>
+          <button
+            className="bg-gray-200 text-gray-700 text-sm font-medium py-2 px-4 rounded-md flex items-center w-full justify-center hover:bg-gray-300"
+            onClick={() => googleLogin()}>
+            Continue with Google
+          </button>
+          <div className="text-white text-lg font-semibold">OR</div>
+          <input
+            type="text"
+            placeholder="Email"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+          <button
+            className="border border-orange-500 text-orange-500 font-semibold py-2 px-6 rounded-md w-full hover:bg-orange-500 hover:text-white"
+            onClick={() => login()}>
+            Log in
+          </button>
+        </div>
       </div>
     </div>
   );

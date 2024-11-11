@@ -2,14 +2,19 @@ import React from "react";
 import {useState} from "react";
 import {FaRegBell} from "react-icons/fa";
 import {CgProfile} from "react-icons/cg";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
+import {Fragment} from "react";
 
 const TopNavbar = () => {
   const [notificationsButton, setNotificationsButton] = useState(false);
   const [profileButton, setProfileButton] = useState(false);
 
+  const location = useLocation();
+  //Path without navbar
+  if (location.pathname === "/auth") return null;
+
   //False data
-  const notifications = Array.from({length: 10}, (_, index) => `Notificare ${index + 1}`);
+  const notifications = Array.from({length: 10}, (_, index) => `Notification ${index + 1}`);
   //const notifications = "";
 
   const toggleNotificationsButton = () => {
@@ -28,8 +33,8 @@ const TopNavbar = () => {
   };
 
   return (
-    <fragment className="sticky top-0">
-      <div className="w-full min-h-16 bg-blue-1 flex items-center px-4  justify-end space-x-6 pr-8">
+    <Fragment>
+      <div className="w-full min-h-16 bg-blue-1 flex items-center px-4  justify-end space-x-6 pr-8 sticky top-0">
         <FaRegBell
           className={`w-8 h-8 text-white ${notificationsButton ? "text-orange-1" : "text-white"}`}
           onClick={() => toggleNotificationsButton()}
@@ -63,7 +68,7 @@ const TopNavbar = () => {
           </h1>
         </div>
       )}
-    </fragment>
+    </Fragment>
   );
 };
 
