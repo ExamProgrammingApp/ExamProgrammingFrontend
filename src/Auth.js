@@ -18,6 +18,7 @@ const Auth = () => {
   };
 
   return (
+    
     <div className="h-screen w-screen bg-blue-1 flex flex-row p-10 space-x-5 ">
       <div className="h-full bg-gray-1 flex-1 content-center justify-items-center p-5 overflow-hidden">
         <img

@@ -9,13 +9,14 @@ import ModifyExam from "./ModifyExam";
 import Auth from "./Auth";
 
 function App() {
+
   return (
     <Router>
       <div className="flex min-h-screen">
         <SideNavbar />
         <div className="flex flex-col w-full">
           <TopNavbar />
-          <Content>
+          <Content >
             <div>
               <Routes>
                 <Route path="/" element={<Home />} />
