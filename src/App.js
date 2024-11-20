@@ -6,6 +6,7 @@ import Content from "./components/Content";
 import ProgramExam from "./ProgramExam";
 import Home from "./Home";
 import Auth from "./Auth";
+import ConfirmExam from "./ConfirmExam";
 import EditExams from "./EditExams";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/program_exam" element={<ProgramExam />} />
                 <Route path="/modify_exam" element={<EditExams />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/confirm_exam" element={<ConfirmExam/>}/>
               </Routes>
             </div>
           </Content>

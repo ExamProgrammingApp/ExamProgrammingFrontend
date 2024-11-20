@@ -1,8 +1,9 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { FaCalendarAlt } from "react-icons/fa";
-import { FaPenToSquare } from "react-icons/fa6";
-import { FaRegPlusSquare } from "react-icons/fa";
+import {Link, useLocation} from "react-router-dom";
+import {FaCalendarAlt} from "react-icons/fa";
+import {FaPenToSquare} from "react-icons/fa6";
+import {FaRegPlusSquare} from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import logo from "../images/logo.png";
 
 const SideNavbar = () => {
@@ -40,6 +41,15 @@ const SideNavbar = () => {
           <FaRegPlusSquare className="w-10 h-10 text-white" />
         </div>
       </Link>
+      <Link to="/confirm_exam">
+        <div
+          className={`w-16 h-16 ${
+            location.pathname === "/confirm_exam" ? "bg-orange-1" : "bg-blue-1"
+          } hover:bg-orange-1 content-center justify-items-center rounded-md`}>
+          <FaCheck className="w-10 h-10 text-white" />
+        </div>
+      </Link>
+
     </div>
   );
 };
