@@ -155,7 +155,7 @@ const Exams = () => {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-10 space-x-10">
+    <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-x-10">
       <div className=" bg-orange-1 flex flex-1 flex-col items-center justify-start p-6 shadow-lg">
         <h1 className="text-4xl font-sans pt-5">Exams</h1>
         <div className="bg-white p-4 rounded-sm max-w-md mt-auto mb-auto">
