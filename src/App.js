@@ -8,6 +8,7 @@ import Home from "./Home";
 import Auth from "./Auth";
 import ConfirmExam from "./ConfirmExam";
 import EditExams from "./EditExams";
+import PageNotFound from "./PageNotFound";
 
 function App() {
   return (
@@ -24,7 +25,8 @@ function App() {
                 <Route path="/program_exam" element={<ProgramExam />} />
                 <Route path="/modify_exam" element={<EditExams />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/confirm_exam" element={<ConfirmExam/>}/>
+                <Route path="/confirm_exam" element={<ConfirmExam />} />
+                <Route path="*" element={<PageNotFound />} />
               </Routes>
             </div>
           </Content>
