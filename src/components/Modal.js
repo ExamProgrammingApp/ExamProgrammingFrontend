@@ -75,7 +75,7 @@ const Modal = ({ exam, onClose, onSubmit }) => {
               type="text"
               value={assistant}
               onChange={(e) => setAssistant(e.target.value)}
-              className="w-full p-2 rounded border border-[#f9a825] bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-[#f9a825]"
+              className="w-full p-2 rounded border border-orange-1 bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
             />
           </div>
 
@@ -89,7 +89,7 @@ const Modal = ({ exam, onClose, onSubmit }) => {
               type="text"
               value={room}
               onChange={(e) => setRoom(e.target.value)}
-              className="w-full p-2 rounded border border-[#f9a825] bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-[#f9a825]"
+              className="w-full p-2 rounded border border-orange-1 bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
             />
           </div>
         </div>
@@ -98,13 +98,13 @@ const Modal = ({ exam, onClose, onSubmit }) => {
         <div className="flex justify-between">
           <button
             onClick={handleReset}
-            className="px-6 py-2 border-2 border-[#f9a825] text-[#f9a825] rounded-lg hover:bg-[#f9a825] hover:text-[#1b1e3d] transition"
+            className="px-6 py-2 border-2 border-orange-1 text-orange-1 rounded-lg hover:bg-orange-1 hover:text-[#1b1e3d] transition"
           >
             RESET
           </button>
           <button
             onClick={handleSubmit}
-            className="px-6 py-2 bg-[#f9a825] text-[#1b1e3d] rounded-lg hover:bg-yellow-500 transition"
+            className="px-6 py-2 bg-orange-1 text-[#1b1e3d] rounded-lg hover:bg-orange-1 transition"
           >
             CONFIRM
           </button>

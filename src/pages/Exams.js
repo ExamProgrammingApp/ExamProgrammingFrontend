@@ -10,6 +10,7 @@ import { IoPersonSharp } from "react-icons/io5";
 import { CiClock2 } from "react-icons/ci";
 import { FaHouseChimney } from "react-icons/fa6";
 import Badge from "@mui/material/Badge";
+import dayjs from "dayjs";
 
 const months = [
   "January",
@@ -152,6 +153,12 @@ const Exams = () => {
     setExams(generatedExams);
     const groupedExamDates = groupExamDaysByMonth(generatedExams);
     setGroupedExams(groupedExamDates);
+
+    const date = dayjs(new Date());
+    const monthIndex = date.month();
+    setCurrentMonth(monthIndex);
+    const daysForCurrentMonth = getDays(monthIndex, groupedExamDates);
+    setHighlightedDays(daysForCurrentMonth);
   }, []);
 
   return (
@@ -166,6 +173,15 @@ const Exams = () => {
               views={["day"]}
               onMonthChange={handleMonthChange}
               onChange={(date) => handleDayClick(date)}
+              sx={{
+                ".Mui-selected": {
+                  backgroundColor: "#E1A23B !important",
+                  color: "#FFFFFF !important",
+                  "&:hover": {
+                    backgroundColor: "#E1A23B !important",
+                  },
+                },
+              }}
               slots={{
                 day: ServerDay,
               }}
@@ -232,10 +248,10 @@ const Exams = () => {
                     Prev
                   </button>
                   <button
-                    className="text-white bg-blue-1 border-white border-2 rounded-full w-10 h-10"
+                    className="text-white bg-blue-1 border-white border-2 rounded-full w-24 h-10"
                     disabled={true}
                   >
-                    {currentPage + 1}
+                    {currentPage + 1} out of {selectedExam.length}
                   </button>
                   <button
                     onClick={handleNext}

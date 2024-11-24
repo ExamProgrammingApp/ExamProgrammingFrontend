@@ -4,6 +4,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ScheduleExam = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,8 @@ const ScheduleExam = () => {
     duration: "",
     date: null,
   });
+  const notifySuccess = (text = "Success") => toast.success(text);
+  const notifyFailed = (text = "Operation Failed") => toast.error(text);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,6 +44,9 @@ const ScheduleExam = () => {
   const handleAddExam = () => {
     if (Object.values(formData).every((value) => value)) {
       handleReset();
+      notifySuccess("Exam was successfully added");
+    } else {
+      notifyFailed("All fields are required");
     }
   };
 
@@ -47,52 +54,39 @@ const ScheduleExam = () => {
     const { day, outsideCurrentMonth, ...other } = props;
 
     return (
-      <Badge
-        key={props.day.toString()}
-        overlap="circular"
-        badgeContent={false}
-      >
-        <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+      <Badge key={props.day.toString()} overlap="circular" badgeContent={false}>
+        <PickersDay
+          {...other}
+          outsideCurrentMonth={outsideCurrentMonth}
+          day={day}
+        />
       </Badge>
     );
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-
+    <div className="flex h-[calc(100vh-64px)] bg-gray-1">
       {/* Main Content */}
       <div className="flex flex-col flex-1 p-8">
-        <h1 className="text-5xl font-handwriting mb-10 text-gray-900">Schedule an exam</h1>
+        <h1 className="text-5xl font-handwriting mb-5 text-gray-900">
+          Schedule an exam
+        </h1>
 
         <form className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Left Column */}
-          <div className="space-y-6">
-            {/* Subject */}
-            <div>
-              <label className="block text-lg font-medium text-gray-800">Subject</label>
-              <select
-                name="subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                className="block w-full mt-2 p-3 bg-white border-2 border-gray-400 rounded-lg"
-              >
-                <option value="">Select</option>
-                <option value="math">Mathematics</option>
-                <option value="physics">Physics</option>
-              </select>
-            </div>
-
+          <div className="space-y-4">
             {/* Teacher */}
             <div className="w-full">
-              <label className="block text-lg font-medium text-gray-800 mb-2">Teacher</label>
+              <label className="block text-lg font-medium text-gray-800">
+                Teacher
+              </label>
               <div className="flex w-full">
                 {/* Select-ul */}
                 <select
                   name="teacher"
                   value={formData.teacher}
                   onChange={handleInputChange}
-                  className="block w-full p-3 bg-white border-2 border-gray-400 rounded-l-lg focus:outline-none"
-                  style={{ height: "51px", boxSizing: "border-box" }} // Lățime și înălțime corect calculate
+                  className=" w-full pl-3 bg-white border-2 border-gray-400 rounded-l-lg focus:outline-none box-border h-10"
                 >
                   <option value="">Select</option>
                   <option value="smith">Dr. Smith</option>
@@ -102,12 +96,7 @@ const ScheduleExam = () => {
                 {/* Butonul */}
                 <button
                   type="button"
-                  className="text-lg font-semibold text-white bg-yellow-500 rounded-r-lg hover:bg-yellow-600 flex-shrink-0"
-                  style={{
-                    height: "51px", // Aceeași înălțime
-                    padding: "0 16px", // Padding ajustat pentru un aspect uniform
-                    boxSizing: "border-box",
-                  }}
+                  className="text-lg font-medium text-white bg-yellow-500 rounded-r-lg hover:bg-yellow-600 flex-shrink-0 h-10 min-w-52 w-1/2"
                 >
                   See teacher's schedule
                 </button>
@@ -115,18 +104,23 @@ const ScheduleExam = () => {
             </div>
             {/* Calendar */}
             <div>
-              <label className="text-lg font-medium text-gray-800 mb-3 block">Select a day</label>
-              <div className="w-full bg-gray-1 rounded-3xl p-6">
+              <label className="text-lg font-medium text-gray-800 block">
+                Select a day
+              </label>
+              <div className="w-full h-fit bg-white rounded-3xl px-10 border-2 border-gray-400">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateCalendar
                     value={formData.date}
+                    views={["day"]}
+                    fixedWeekNumber={6}
+                    showDaysOutsideCurrentMonth={true}
                     onChange={handleDateChange}
                     slots={{ day: ServerDay }}
                     slotProps={{
                       day: {
                         sx: {
-                          width: "40px",
-                          height: "40px",
+                          width: "30px",
+                          height: "30px",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -140,14 +134,14 @@ const ScheduleExam = () => {
                         },
                       },
                     }}
-                    className="mx-auto"
+                    //className="mx-auto"
                     sx={{
                       width: "100%",
-                      maxWidth: 800,
+                      maxWidth: 600,
+                      maxHeight: "300px",
                       margin: "0 auto",
                       ".MuiCalendarPicker-root": {
-                        maxWidth: "100%",
-                        marginBottom: "20px",
+                        maxWidth: "90%",
                       },
                       ".MuiDayCalendar-weekContainer": {
                         display: "grid",
@@ -167,6 +161,13 @@ const ScheduleExam = () => {
                         fontSize: "14px",
                         textAlign: "center",
                       },
+                      ".Mui-selected": {
+                        backgroundColor: "#E1A23B !important",
+                        color: "#FFFFFF !important",
+                        "&:hover": {
+                          backgroundColor: "#E1A23B !important",
+                        },
+                      },
                     }}
                   />
                 </LocalizationProvider>
@@ -175,15 +176,34 @@ const ScheduleExam = () => {
           </div>
 
           {/* Right Column */}
-          <div className="space-y-6">
+
+          <div className="space-y-4">
+            {/* Subject */}
+            <div>
+              <label className="block text-lg font-medium text-gray-800">
+                Subject
+              </label>
+              <select
+                name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
+                className="block w-full pl-3 bg-white border-2 border-gray-400 rounded-lg h-10"
+              >
+                <option value="">Select</option>
+                <option value="math">Mathematics</option>
+                <option value="physics">Physics</option>
+              </select>
+            </div>
             {/* Group */}
             <div>
-              <label className="block text-lg font-medium text-gray-800">Group</label>
+              <label className="block text-lg font-medium text-gray-800">
+                Group
+              </label>
               <select
                 name="group"
                 value={formData.group}
                 onChange={handleInputChange}
-                className="block w-full mt-2 p-3 bg-white border-2 border-gray-400 rounded-lg"
+                className="block w-full bg-white border-2 pl-3 border-gray-400 rounded-lg h-10"
               >
                 <option value="">Select</option>
                 <option value="a1">Group A1</option>
@@ -193,7 +213,9 @@ const ScheduleExam = () => {
 
             {/* Nr. of Students */}
             <div>
-              <label className="block text-lg font-medium text-gray-800">Nr. of students</label>
+              <label className="block text-lg font-medium text-gray-800">
+                Nr. of students
+              </label>
               <input
                 type="number"
                 name="students"
@@ -202,27 +224,31 @@ const ScheduleExam = () => {
                 min="1"
                 max="100"
                 placeholder="Enter number of students"
-                className="block w-full mt-2 p-3 bg-white border-2 border-gray-400 rounded-lg"
+                className="block w-full pl-3 bg-white border-2 border-gray-400 rounded-lg h-10"
               />
             </div>
 
             {/* Select Time */}
             <div className="flex flex-col items-start mt-8">
-              <label className="text-xl leading-none text-black mb-3">Select time</label>
-              <div className="w-full max-w-sm bg-blue-1 rounded-3xl p-6">
+              <label className="text-xl leading-none text-black mb-3">
+                Select time
+              </label>
+              <div className="w-full max-w-sm rounded-3xl">
                 <input
                   type="time"
                   name="time"
                   value={formData.time}
                   onChange={handleInputChange}
-                  className="block w-full p-4 text-black text-lg bg-gray-100 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-1 focus:border-orange-1 outline-none"
+                  className="block w-full pl-3 h-10 text-black text-lg bg-gray-100 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-1 focus:border-orange-1 outline-none"
                 />
               </div>
             </div>
 
             {/* Duration */}
             <div>
-              <label className="block text-lg font-medium text-gray-800">Duration (in minutes)</label>
+              <label className="block text-lg font-medium text-gray-800">
+                Duration (in minutes)
+              </label>
               <input
                 type="number"
                 name="duration"
@@ -230,16 +256,14 @@ const ScheduleExam = () => {
                 onChange={handleInputChange}
                 min="1"
                 placeholder="Enter duration in minutes"
-                className="block w-full mt-2 p-3 bg-white border-2 border-gray-400 rounded-lg"
+                className="block w-full pl-3 bg-white border-2 border-gray-400 rounded-lg h-10"
               />
             </div>
           </div>
         </form>
 
-
-
         {/* Buttons */}
-        <div className="mt-10 flex justify-center space-x-6">
+        <div className="flex justify-center space-x-12 pt-8">
           <button
             type="button"
             onClick={handleReset}
@@ -254,9 +278,9 @@ const ScheduleExam = () => {
           >
             Add Exam
           </button>
-
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
