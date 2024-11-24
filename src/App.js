@@ -1,14 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Exams from "./Exams";
+import Exams from "./pages/Exams";
 import SideNavbar from "./components/SideNavbar";
 import TopNavbar from "./components/TopNavbar";
 import Content from "./components/Content";
-import ProgramExam from "./ProgramExam";
-import Home from "./Home";
-import Auth from "./Auth";
-import ConfirmExam from "./ConfirmExam";
-import EditExams from "./EditExams";
-import PageNotFound from "./PageNotFound";
+import ProgramExam from "./pages/ProgramExam";
+import Auth from "./auth/Auth";
+import ConfirmExam from "./pages/ConfirmExam";
+import EditExams from "./pages/EditExams";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
@@ -20,7 +19,7 @@ function App() {
           <Content>
             <div>
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Exams />} />
                 <Route path="/exams" element={<Exams />} />
                 <Route path="/program_exam" element={<ProgramExam />} />
                 <Route path="/modify_exam" element={<EditExams />} />
