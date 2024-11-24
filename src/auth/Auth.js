@@ -1,5 +1,5 @@
 import React from "react";
-import AuthImage from "./images/auth_img.png";
+import AuthImage from "../assets/images/auth_img.png";
 import {useNavigate} from "react-router-dom";
 
 const Auth = () => {

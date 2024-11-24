@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
-import Modal from "./Modal";
+import Modal from "../components/Modal";
 
 const generateExams = () => {
   const subjects = ["IP", "CMO", "SI", "PDB", "SIIEP"];

@@ -4,7 +4,7 @@ import {FaCalendarAlt} from "react-icons/fa";
 import {FaPenToSquare} from "react-icons/fa6";
 import {FaRegPlusSquare} from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
-import logo from "../images/logo.png";
+import logo from "../assets/images/logo.png";
 
 const SideNavbar = () => {
   const location = useLocation();
