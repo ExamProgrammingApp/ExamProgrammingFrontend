@@ -12,6 +12,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import axios from "axios";
 
 const timeOptions = [
   "08:00",
@@ -94,6 +95,25 @@ const EditExams = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const notify = (text = "Success") => toast.success(text);
 
+  useEffect(() => {
+    const fetchRejectedExams = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/exams/status/rejected`);
+
+        // Ensure response data is not empty or malformed
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          setExams(response.data);
+        } else {
+          console.error("No exams found or invalid data format");
+        }
+      } catch (error) {
+        console.error("Error fetching rejected exams:", error);
+      }
+    };
+
+    fetchRejectedExams();
+  }, []);
+
   const handleTimeChange = (event) => {
     setSelectedTime(event.target.value);
   };
@@ -135,10 +155,6 @@ const EditExams = () => {
     setSelectedTime(exam.hour);
   };
 
-  useEffect(() => {
-    const generatedExams = generateExams();
-    setExams(generatedExams);
-  }, []);
 
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-y-5">
@@ -168,37 +184,33 @@ const EditExams = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {exams
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((exam, index) => {
-                      return (
-                        <TableRow
-                          role="checkbox"
-                          tabIndex={-1}
-                          key={index}
-                          className={`  cursor-pointer transition duration-500 ${
-                            selectedExam?.exam === exam.exam &&
-                            selectedExam?.date === exam.date &&
-                            selectedExam?.teacher === exam.teacher
-                              ? "bg-orange-1"
-                              : "bg-gray-1"
-                          } hover:bg-orange-1`}
-                          onClick={() => SelectExam(exam, index)}
-                        >
-                          {columns.map((column) => {
-                            const value =
-                              column.id === "date"
-                                ? dayjs(exam[column.id]).format("DD-MM-YYYY")
-                                : exam[column.id];
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                {value}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })}
+                  {exams.map((exam, index) => {
+                    return (
+                      <TableRow
+                        key={exam.examId}
+                        className={`cursor-pointer ${selectedExam?.examId === exam.examId ? "bg-orange-1 text-white" : "bg-white text-black"
+                          }`}
+                        onClick={() => SelectExam(exam)}
+                      >
+                        {columns.map((column) => {
+                          let value;
+                          if (column.id === "teacher") {
+                            value = exam.teacher ? exam.teacher.name : "No Teacher";
+                          } else if (column.id === "exam") {
+                            value = exam.subject || exam.exam || "No Subject";
+                          } else {
+                            value = exam[column.id];
+                          }
+
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.id === 'date' ? dayjs(exam[column.id]).format("DD-MM-YYYY") : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
