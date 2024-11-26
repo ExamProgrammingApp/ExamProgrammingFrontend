@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
@@ -6,6 +6,8 @@ import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { createExam } from "../api";
+import axios from "axios";
 
 const ScheduleExam = () => {
   const [formData, setFormData] = useState({
@@ -17,11 +19,28 @@ const ScheduleExam = () => {
     duration: "",
     date: null,
   });
+
+
+  const [teachers, setTeachers] = useState([]);
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/teachers`);
+        setTeachers(response.data);
+      } catch (error) {
+        console.error("Error fetching teachers:", error);
+      }
+    };
+
+    fetchTeachers();
+  }, []);
+
   const notifySuccess = (text = "Success") => toast.success(text);
   const notifyFailed = (text = "Operation Failed") => toast.error(text);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Input change - ${name}: ${value}`);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -41,12 +60,33 @@ const ScheduleExam = () => {
     });
   };
 
-  const handleAddExam = () => {
-    if (Object.values(formData).every((value) => value)) {
-      handleReset();
-      notifySuccess("Exam was successfully added");
-    } else {
+  const handleAddExam = async () => {
+    if (Object.values(formData).some((value) => !value)) {
       notifyFailed("All fields are required");
+      return;
+    }
+
+    const examData = {
+      subject: formData.subject,
+      teacherId: formData.teacher,
+      group: formData.group,
+      numberOfStudents: parseInt(formData.students, 10),
+      startTime: formData.time,
+      duration: formData.duration,
+      date: formData.date,
+    };
+
+
+    try {
+
+      const token = process.env.REACT_APP_API_TOKEN;
+
+      const result = await createExam(examData, token);
+      console.log("Exam created successfully:", result);
+      notifySuccess("Exam was successfully added");
+      handleReset();
+    } catch (error) {
+      notifyFailed("Failed to add exam");
     }
   };
 
@@ -86,11 +126,14 @@ const ScheduleExam = () => {
                   name="teacher"
                   value={formData.teacher}
                   onChange={handleInputChange}
-                  className=" w-full pl-3 bg-white border-2 border-gray-400 rounded-l-lg focus:outline-none box-border h-10"
+                  className="w-full pl-3 bg-white border-2 border-gray-400 rounded-l-lg focus:outline-none box-border h-10"
                 >
                   <option value="">Select</option>
-                  <option value="smith">Dr. Smith</option>
-                  <option value="jones">Prof. Jones</option>
+                  {teachers.map((teacher) => (
+                    <option key={teacher.teacherId} value={teacher.teacherId}>
+                      {teacher.name}
+                    </option>
+                  ))}
                 </select>
 
                 {/* Butonul */}
