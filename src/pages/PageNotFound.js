@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const PageNotFound = () => {
+const PageNotFound = ({ resetUser }) => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate("/exams"); // Navighează la pagina principală sau orice altă rută relevantă
+    const user = localStorage.getItem("userType");
+    if (user === "teacher") navigate("/confirm_exam");
+    else navigate("/exams");
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem("userType");
+    resetUser(user);
+  }, []);
 
   return (
     <div className="h-[calc(100vh-64px)] w-full bg-gray-1 p-5">

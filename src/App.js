@@ -1,37 +1,100 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
 import Exams from "./pages/Exams";
 import SideNavbar from "./components/SideNavbar";
 import TopNavbar from "./components/TopNavbar";
 import Content from "./components/Content";
 import ProgramExam from "./pages/ProgramExam";
-import Auth from "./auth/Auth";
 import ConfirmExam from "./pages/ConfirmExam";
 import EditExams from "./pages/EditExams";
 import PageNotFound from "./pages/PageNotFound";
+import PrivateRoute from "./components/PrivateRoute";
+import Auth from "./auth/Auth";
+import { AuthProvider } from "./auth/AuthContext";
+import { useState } from "react";
 
 function App() {
+  const [userType, setUserType] = useState(() => {
+    return localStorage.getItem("userType") || null; // Valoare implicită "user"
+  });
+
+  const handleUserChange = (user = "user") => {
+    setUserType(user);
+    console.log(user);
+    localStorage.setItem("userType", user); // Salvează userType în localStorage
+  };
+
   return (
-    <Router>
-      <div className="flex min-h-screen">
-        <SideNavbar />
-        <div className="flex flex-col w-full">
-          <TopNavbar />
-          <Content>
-            <div>
-              <Routes>
-                <Route path="/" element={<Exams />} />
-                <Route path="/exams" element={<Exams />} />
-                <Route path="/program_exam" element={<ProgramExam />} />
-                <Route path="/modify_exam" element={<EditExams />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/confirm_exam" element={<ConfirmExam />} />
-                <Route path="*" element={<PageNotFound />} />
-              </Routes>
-            </div>
-          </Content>
+    <AuthProvider>
+      <Router>
+        <div className="flex min-h-screen">
+          <SideNavbar userType={userType} />
+          <div className="flex flex-col w-full">
+            <TopNavbar userType={userType} />
+            <Content>
+              <div>
+                <Routes>
+                  {/* PAGES FOR UNREGISTERED USERS */}
+
+                  {/* PAGES FOR ALL USERS */}
+                  <Route
+                    path="/*"
+                    element={
+                      <PrivateRoute
+                        element={
+                          <PageNotFound
+                            resetUser={(userType) => handleUserChange(userType)}
+                          />
+                        }
+                      />
+                    }
+                  />
+
+                  {/* PAGES ONLY FOR STUDENTS */}
+                  {(userType === "student" || userType === "headstudent") && (
+                    <Route
+                      path="/exams"
+                      element={<PrivateRoute element={<Exams />} />}
+                    />
+                  )}
+
+                  {/* PAGES ONLY FOR HEADSTUDENTS */}
+                  {userType === "headstudent" && (
+                    <Route
+                      path="/program_exam"
+                      element={<PrivateRoute element={<ProgramExam />} />}
+                    />
+                  )}
+                  {userType === "headstudent" && (
+                    <Route
+                      path="/modify_exam"
+                      element={<PrivateRoute element={<EditExams />} />}
+                    />
+                  )}
+
+                  {/* PAGES ONLY FOR TEACHERS */}
+                  {userType === "teacher" && (
+                    <Route
+                      path="/confirm_exam"
+                      element={<PrivateRoute element={<ConfirmExam />} />}
+                    />
+                  )}
+                  {/* UNPROTECTED PAGES */}
+                  <Route
+                    path="/auth"
+                    element={
+                      <Auth
+                        onLogin={(userType) => handleUserChange(userType)}
+                      />
+                    }
+                  />
+                </Routes>
+              </div>
+            </Content>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 
