@@ -2,16 +2,7 @@ import AuthImage from "../assets/images/auth_img.png";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
-
-const users = {
-  "user@user.com": { password: "user", role: "user" },
-  "student@student.com": { password: "student", role: "student" },
-  "headstudent@student.com": {
-    password: "headstudent",
-    role: "headstudent",
-  },
-  "teacher@teacher.com": { password: "teacher", role: "teacher" },
-};
+import axios from "axios";
 
 const Auth = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -22,19 +13,41 @@ const Auth = ({ onLogin }) => {
   const signIn = () => {
     navigate("/exams");
   };
+  const setUserType = onLogin;
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const user = users[email];
+    try {
+      console.log("Email:", email, "Password:", password);
 
-    if (user && user.password === password) {
-      login({ email, role: user.role });
-      onLogin(user.role);
-      if (user.role === "teacher") navigate("/confirm_exam");
-      else navigate("/exams");
-    } else {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/login`, {
+        email,
+        password,
+      });
+
+      console.log("Response:", response);
+
+      const { access_token, role } = response.data;
+
+      if (access_token) {
+        console.log("Token obținut:", access_token);
+
+        localStorage.setItem("access_token", access_token);
+        localStorage.setItem("role", role);
+        login({ email, role, token: access_token });
+        setUserType(role);
+        if (role === "teacher") {
+          navigate("/confirm_exam");
+        } else if (role === "headstudent") {
+          navigate("/modify_exam");
+        }else if (role === "student") {
+          navigate("/exams");
+        }
+      }
+    } catch (error) {
       alert("Credențiale invalide!");
+      console.error("Login error: ", error);
     }
   };
 
