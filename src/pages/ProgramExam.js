@@ -79,8 +79,12 @@ const ScheduleExam = () => {
 
     try {
 
-      const token = process.env.REACT_APP_API_TOKEN;
-
+      const token = localStorage.getItem("access_token");
+      console.log("Token", token);
+      if (!token) {
+        notifyFailed("No authentication token found");
+        return;
+      }
       const result = await createExam(examData, token);
       console.log("Exam created successfully:", result);
       notifySuccess("Exam was successfully added");

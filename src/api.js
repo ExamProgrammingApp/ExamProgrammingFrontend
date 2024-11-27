@@ -7,14 +7,18 @@ const api = axios.create({
 
 export const createExam = async (examData, token) => {
     try {
+        console.log("Token trimis în header:", token); 
         const response = await api.post("/exams", examData, {
-            headers: {
+          headers: {
                 Authorization: `Bearer ${token}`,
-            },
+          },
         });
         return response.data;
     } catch (error) {
         console.error("Error creating exam:", error);
+        if (error.response) {
+            console.error("Server error:", error.response.data); // Detalii despre eroarea de la server
+          }
         throw error;
     }
 };
