@@ -9,6 +9,7 @@ import ConfirmExam from "./pages/ConfirmExam";
 import EditExams from "./pages/EditExams";
 import PageNotFound from "./pages/PageNotFound";
 import PrivateRoute from "./components/PrivateRoute";
+import AllExams from "./pages/AllExams";
 import Auth from "./auth/Auth";
 import { AuthProvider } from "./auth/AuthContext";
 import { useState } from "react";
@@ -34,8 +35,6 @@ function App() {
             <Content>
               <div>
                 <Routes>
-                  {/* PAGES FOR UNREGISTERED USERS */}
-
                   {/* PAGES FOR ALL USERS */}
                   <Route
                     path="/*"
@@ -49,6 +48,13 @@ function App() {
                       />
                     }
                   />
+                  {/* PAGES FOR UNREGISTERED USERS */}
+                  {userType === "user" && (
+                    <Route
+                      path="/all_exams"
+                      element={<PrivateRoute element={<AllExams />} />}
+                    />
+                  )}
 
                   {/* PAGES ONLY FOR STUDENTS */}
                   {(userType === "student" || userType === "headstudent") && (

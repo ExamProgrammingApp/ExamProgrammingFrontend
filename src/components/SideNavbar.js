@@ -63,6 +63,18 @@ const SideNavbar = ({ userType }) => {
           </div>
         </Link>
       )}
+
+      {userType === "user" && (
+        <Link to="/all_exams">
+          <div
+            className={`w-16 h-16 ${
+              location.pathname === "/all_exams" ? "bg-orange-1" : "bg-blue-1"
+            } hover:bg-orange-1 content-center justify-items-center rounded-md`}
+          >
+            <FaCalendarAlt className="w-10 h-10 text-white" />
+          </div>
+        </Link>
+      )}
     </div>
   );
 };

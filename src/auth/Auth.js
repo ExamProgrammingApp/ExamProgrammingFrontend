@@ -38,6 +38,14 @@ const Auth = ({ onLogin }) => {
     }
   };
 
+  const continueWIthoutLogin = () => {
+    const user = users["user@user.com"];
+    login({ email, role: user.role });
+    onLogin(user.role);
+
+    navigate("/all_exams");
+  };
+
   return (
     <div className="h-screen w-screen bg-blue-1 flex flex-row p-10 space-x-5 ">
       <div className="h-full bg-gray-1 flex-1 content-center justify-items-center p-5 overflow-hidden">
@@ -50,7 +58,13 @@ const Auth = ({ onLogin }) => {
       <div className=" flex flex-1 justify-center ">
         <div className="flex flex-col items-center justify-center space-y-6 p-10 rounded-lg w-full h-full flex-1 max-w-[500px]">
           <button
-            className="bg-orange-500 text-white text-lg font-semibold py-3 px-6 rounded-md hover:bg-orange-600"
+            className="bg-gray-1 text-black text-lg font-semibold py-3 rounded-md px-6 mb-28 hover:bg-white hover:text-orange-1 ease-in duration-300"
+            onClick={() => continueWIthoutLogin()}
+          >
+            Continue without login
+          </button>
+          <button
+            className="bg-orange-1 text-white text-lg font-semibold py-3 px-6 rounded-md hover:bg-orange-500"
             onClick={() => signIn()}
           >
             Sign in
@@ -62,7 +76,7 @@ const Auth = ({ onLogin }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-1"
           />
           <input
             type="password"
@@ -70,13 +84,13 @@ const Auth = ({ onLogin }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-1"
           />
           <button
-            className="border border-orange-500 text-orange-500 font-semibold py-2 px-6 rounded-md w-full hover:bg-orange-500 hover:text-white"
+            className="border border-orange-1 text-orange-1 font-semibold py-2 px-6 rounded-md w-full hover:bg-orange-500 hover:text-white"
             onClick={(e) => handleLogin(e)}
           >
-            Log in
+            Login
           </button>
         </div>
       </div>
