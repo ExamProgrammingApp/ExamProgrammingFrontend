@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 
+const defaultUser = {  "user@user.com": { password: "user", role: "user" }}
+
 const Auth = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,24 +54,11 @@ const Auth = ({ onLogin }) => {
   };
 
   const continueWIthoutLogin = () => {
-    // Default user for "Continue without login"
-    const defaultUser = {
-      email: "guest@guest.com",
-      role: "user", // Set the default role as 'student' or any role you need
-    };
-  
-    // Simulate login
-    login({
-      email: defaultUser.email,
-      role: defaultUser.role,
-      token: null, // No token required for guest login
-    });
-  
-    // Call onLogin to propagate the role
-    onLogin(defaultUser.role);
-  
-    // Navigate to the default page for guests
-    navigate("/all_exams"); // Change route if necessary
+    const user = defaultUser["user@user.com"];
+    login({ email, role: user.role });
+    onLogin(user.role);
+
+    navigate("/all_exams");
   };
 
   return (
