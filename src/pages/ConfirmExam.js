@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import Modal from "../components/Modal";
-import { confirmExam, fetchExamsByGroupOrSubject, deleteExam } from "../api";
+import { confirmExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
 
 const ConfirmExam = () => {
   const [exams, setExams] = useState([]);
@@ -15,14 +15,19 @@ const ConfirmExam = () => {
   useEffect(() => {
     const loadExams = async () => {
       try {
-        // Replace "3141A" and "IP" with dynamic or default filters as needed
-        const examsData = await fetchExamsByGroupOrSubject("IP");
-        setExams(examsData);
+        const examsData = await fetcheExamByTeacherId(); // Correct invocation
+        if (Array.isArray(examsData)) {
+          setExams(examsData);
+        } else {
+          console.error("Invalid data format, expected an array:", examsData);
+          setExams([]); // Fallback to an empty array
+        }
       } catch (error) {
         console.error("Error loading exams:", error);
+        setExams([]); // Fallback to an empty array
       }
     };
-
+  
     loadExams();
   }, []);
 

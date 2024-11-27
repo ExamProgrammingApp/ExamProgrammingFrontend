@@ -28,7 +28,7 @@ export const fetchExamById = async (id) => {
   try {
     const response = await api.get(`/exams/${id}`, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_JWT_TOKEN}`, // Use your JWT token logic
+        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`, // Use your JWT token logic
       },
     });
     return response.data;
@@ -43,7 +43,7 @@ export const confirmExam = async (examData) => {
   try {
     const response = await api.post("/exams", examData, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_JWT_TOKEN}`,
+        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
       },
     });
     return response.data;
@@ -58,7 +58,7 @@ export const deleteExam = async (id) => {
   try {
     const response = await api.delete(`/exams/${id}`, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_JWT_TOKEN}`,
+        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
       },
     });
     return response.data;
@@ -74,7 +74,7 @@ export const fetchExamsByGroupOrSubject = async (param) => {
     const parameter = param;
     const response = await api.get("/exams", {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_JWT_TOKEN}`,
+        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
       },
       parameter,
     });
@@ -84,3 +84,14 @@ export const fetchExamsByGroupOrSubject = async (param) => {
     throw error;
   }
 };
+export const fetcheExamByTeacherId = async()=>{
+    try{
+        const response = await api.get("exams/teacher/teacherID",{ headers:{
+            Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+        },});
+       return response.data;
+    }catch(error){
+        console.error("Error fetching exams by teacher id");
+        throw error;
+      }
+  }
