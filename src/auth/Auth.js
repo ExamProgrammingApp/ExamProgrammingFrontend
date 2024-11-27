@@ -52,11 +52,24 @@ const Auth = ({ onLogin }) => {
   };
 
   const continueWIthoutLogin = () => {
-    const user = users["user@user.com"];
-    login({ email, role: user.role });
-    onLogin(user.role);
-
-    navigate("/all_exams");
+    // Default user for "Continue without login"
+    const defaultUser = {
+      email: "guest@guest.com",
+      role: "user", // Set the default role as 'student' or any role you need
+    };
+  
+    // Simulate login
+    login({
+      email: defaultUser.email,
+      role: defaultUser.role,
+      token: null, // No token required for guest login
+    });
+  
+    // Call onLogin to propagate the role
+    onLogin(defaultUser.role);
+  
+    // Navigate to the default page for guests
+    navigate("/all_exams"); // Change route if necessary
   };
 
   return (
