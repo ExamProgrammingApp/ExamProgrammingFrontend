@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 
+const defaultUser = {  "user@user.com": { password: "user", role: "user" }}
+
 const Auth = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +54,7 @@ const Auth = ({ onLogin }) => {
   };
 
   const continueWIthoutLogin = () => {
-    const user = users["user@user.com"];
+    const user = defaultUser["user@user.com"];
     login({ email, role: user.role });
     onLogin(user.role);
 
