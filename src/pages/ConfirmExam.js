@@ -2,30 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import Modal from "../components/Modal";
-
-const generateExams = () => {
-  const subjects = ["IP", "CMO", "SI", "PDB", "SIIEP"];
-  const teachers = ["Andrei", "Marian", "Radu", "Ionut", "Darius"];
-  const groups = ["3141A", "3141B", "3142A", "3142B"];
-  const hours = ["08:00", "10:00", "12:00", "14:00", "16:00"];
-  const rooms = ["101", "202", "303", "404", "505"];
-
-  const randomPick = (list) => list[Math.floor(Math.random() * list.length)];
-
-  return Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    subject: randomPick(subjects),
-    teacher: randomPick(teachers),
-    group: randomPick(groups),
-    hour: randomPick(hours),
-    room: "",
-    date: `2024-${String(Math.floor(Math.random() * 12) + 1).padStart(
-      2,
-      "0"
-    )}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
-    confirmed: null, // Initial state for confirmation (null, true, or false)
-  }));
-};
+import { confirmExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
 
 const ConfirmExam = () => {
   const [exams, setExams] = useState([]);
@@ -34,8 +11,24 @@ const ConfirmExam = () => {
   const [selectedExam, setSelectedExam] = useState(null);
   const itemsPerPage = 10;
 
+  // Fetch exams when the component mounts
   useEffect(() => {
-    setExams(generateExams());
+    const loadExams = async () => {
+      try {
+        const examsData = await fetcheExamByTeacherId(); // Correct invocation
+        if (Array.isArray(examsData)) {
+          setExams(examsData);
+        } else {
+          console.error("Invalid data format, expected an array:", examsData);
+          setExams([]); // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error("Error loading exams:", error);
+        setExams([]); // Fallback to an empty array
+      }
+    };
+  
+    loadExams();
   }, []);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -47,19 +40,30 @@ const ConfirmExam = () => {
     setShowModal(true);
   };
 
-  const handleReject = (id) => {
-    setExams((prevExams) => prevExams.filter((exam) => exam.id !== id));
+  const handleReject = async (id) => {
+    try {
+      await deleteExam(id); // API call to delete the exam
+      setExams((prevExams) => prevExams.filter((exam) => exam.id !== id));
+    } catch (error) {
+      console.error("Error deleting exam:", error);
+    }
   };
 
-  const handleModalSubmit = (updatedExam) => {
-    setExams((prevExams) =>
-      prevExams.map((exam) =>
-        exam.id === updatedExam.id
-          ? { ...exam, ...updatedExam, confirmed: true }
-          : exam
-      )
-    );
-    setShowModal(false);
+  const handleModalSubmit = async (updatedExam) => {
+    try {
+      const confirmedExam = await confirmExam({
+        ...updatedExam,
+        confirmed: true,
+      });
+      setExams((prevExams) =>
+        prevExams.map((exam) =>
+          exam.id === confirmedExam.id ? confirmedExam : exam
+        )
+      );
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error confirming exam:", error);
+    }
   };
 
   return (
