@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 
-const defaultUser = {  "user@user.com": { password: "user", role: "user" }}
+const defaultUser = { "user@user.com": { password: "user", role: "user" } };
 
 const Auth = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -23,10 +23,13 @@ const Auth = ({ onLogin }) => {
     try {
       console.log("Email:", email, "Password:", password);
 
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
+        {
+          email,
+          password,
+        }
+      );
 
       console.log("Response:", response);
 
@@ -43,7 +46,7 @@ const Auth = ({ onLogin }) => {
           navigate("/confirm_exam");
         } else if (role === "headstudent") {
           navigate("/modify_exam");
-        }else if (role === "student") {
+        } else if (role === "student") {
           navigate("/exams");
         }
       }
@@ -102,7 +105,7 @@ const Auth = ({ onLogin }) => {
             className="w-full px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-1"
           />
           <button
-            className="border border-orange-1 text-orange-1 font-semibold py-2 px-6 rounded-md w-full hover:bg-orange-500 hover:text-white"
+            className="bg-orange-1 text-white font-semibold py-2 px-6 rounded-md w-full hover:bg-orange-500 hover:text-white"
             onClick={(e) => handleLogin(e)}
           >
             Login
