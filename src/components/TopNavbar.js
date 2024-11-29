@@ -5,11 +5,16 @@ import { CgProfile } from "react-icons/cg";
 import { Link, useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import { useAuth } from "../auth/AuthContext";
+import LogoutModal from "./LogoutModal";
+import { useNavigate } from "react-router-dom";
 
 const TopNavbar = ({ userType }) => {
   const [notificationsButton, setNotificationsButton] = useState(false);
   const [profileButton, setProfileButton] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { logout } = useAuth();
+
+  const navigate = useNavigate();
 
   const location = useLocation();
   //Path without navbar
@@ -37,9 +42,20 @@ const TopNavbar = ({ userType }) => {
     setProfileButton(false);
   };
 
-  const logOut = () => {
+  // const logOut = () => {
+  //   toggleFalse();
+  //   logout();
+  // };
+
+  const ShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleModalSubmit = () => {
+    setShowModal(false);
     toggleFalse();
     logout();
+    navigate("/auth");
   };
 
   return (
@@ -74,14 +90,16 @@ const TopNavbar = ({ userType }) => {
       )}
       {profileButton && (
         <div className="fixed top-16 right-0 bg-orange-1 h-fit min-w-60">
-          <h1 className="text-xl">
-            <Link to="/auth">
-              <h1 className="text-xl" onClick={() => logOut()}>
-                Logout
-              </h1>
-            </Link>
+          <h1 className="text-xl" onClick={() => ShowModal()}>
+            Logout
           </h1>
         </div>
+      )}
+      {showModal && (
+        <LogoutModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleModalSubmit}
+        />
       )}
     </Fragment>
   );
