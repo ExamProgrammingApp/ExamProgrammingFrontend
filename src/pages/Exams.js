@@ -11,6 +11,7 @@ import { CiClock2 } from "react-icons/ci";
 import { FaHouseChimney } from "react-icons/fa6";
 import Badge from "@mui/material/Badge";
 import dayjs from "dayjs";
+import axios from "axios";
 
 const months = [
   "January",
@@ -30,9 +31,9 @@ const months = [
 //MARK EXAMS ON CALENDAR
 function ServerDay(props) {
   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-
+  const formattedDay = dayjs(day).format("YYYY-MM-DD");
   const isSelected =
-    !outsideCurrentMonth && highlightedDays.includes(day.date());
+    !outsideCurrentMonth && highlightedDays.includes(formattedDay);
 
   return (
     <Badge
@@ -49,90 +50,69 @@ function ServerDay(props) {
   );
 }
 
-//GENERATE FALSE EXAMS
-function generateExams() {
-  const subjects = ["IP", "CMO", "SI", "PDB", "SIIEP"];
-  const teachers = ["Andrei", "Marian", "Radu", "Ionut", "Darius"];
-  const groups = ["3141A", "3141B", "3142A", "3142B"];
-  const hour = ["08:00", "10:00", "12:00", "14:00", "16:00"];
-  const room = ["101", "202", "303", "404", "505"];
-
-  function randomPick(list) {
-    const index = Math.floor(Math.random() * list.length);
-    return list[index];
-  }
-
-  const exams = [];
-  for (let i = 0; i < 40; i++) {
-    const examDetails = {
-      exam: randomPick(subjects),
-      teacher: randomPick(teachers),
-      group: randomPick(groups),
-      hour: randomPick(hour),
-      date: `2024-${String(Math.floor(Math.random() * 4) + 9).padStart(
-        2,
-        "0"
-      )}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
-      room: randomPick(room),
-    };
-    exams.push(examDetails);
-  }
-  return exams;
-}
-
-//FILTER EXAMS BY MONTH
-function groupExamDaysByMonth(examList) {
-  const dataByMonth = {};
-
-  examList.forEach((exam) => {
-    const dateObj = new Date(exam.date);
-    const month = dateObj.toLocaleString("en-US", { month: "long" });
-    const day = String(dateObj.getDate()).padStart(2, "0");
-
-    if (!dataByMonth[month]) {
-      dataByMonth[month] = [];
-    }
-
-    dataByMonth[month].push(day);
-  });
-
-  return Object.entries(dataByMonth).map(([month, days]) => ({
-    month,
-    days,
-  }));
-}
-
-//GET DAYS FOR CURRENT MONTH
-function getDays(monthIndex, examList) {
-  const currentMonth = months[monthIndex];
-  const monthData = examList.find((exam) => exam.month === currentMonth);
-  if (monthData) {
-    return monthData.days.map((day) => parseInt(day, 10));
-  } else {
-    return [];
-  }
-}
-
 const Exams = () => {
-  const [currentMonth, setCurrentMonth] = useState(null);
   const [highlightedDays, setHighlightedDays] = useState([]);
-  const [groupedExams, setGroupedExams] = useState([]);
-  const [exams, setExams] = useState([]);
   const [selectedExam, setSelectedExam] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [token, setToken] = useState(localStorage.getItem("access_token")); // presupunem că token-ul este în localStorage
 
-  const handleMonthChange = (date) => {
-    const monthIndex = date.month();
-    setCurrentMonth(monthIndex);
-    const daysForCurrentMonth = getDays(monthIndex, groupedExams);
-    setHighlightedDays(daysForCurrentMonth);
+  // GET EXAMS FOR THE CURRENT USER
+  const fetchExams = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/exams`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const examsData = response.data;
+      if (!Array.isArray(examsData)) {
+        console.error("Data is not in the expected format");
+        return;
+      }
+      const examDays = examsData.map(exam => {
+        const dateObj = new Date(exam.date);
+        return dayjs(dateObj).format("YYYY-MM-DD");
+      });
+      console.log("Exam Days:", examDays);
+        setHighlightedDays(examDays);
+  
+    } catch (error) {
+      console.error("Error fetching exams:", error.response || error.message);
+    }
   };
+  
+  const fetchExamsByDate = async (date) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/exams/date/${date}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("Exams for selected date:", response.data);
+      setSelectedExam(response.data);
+      setCurrentPage(0);
+    } catch (error) {
+      console.error("Error fetching exams by date:", error.response || error.message);
+    }
+  };
+
+  useEffect(() => {
+    console.log("useEffect fired"); 
+    const token = localStorage.getItem("access_token");
+    console.log('Token:', token); 
+    if (token) {
+      fetchExams();
+    } else {
+      console.log("Token sau user nu sunt setate.");
+    }
+  }, [token]);
 
   const handleDayClick = (date) => {
     const selectedDate = date.format("YYYY-MM-DD");
-    const selected = exams.filter((exam) => exam.date === selectedDate);
-    setSelectedExam(selected);
-    setCurrentPage(0);
+    console.log("Selected date:", selectedDate);
+    fetchExamsByDate(selectedDate);
   };
 
   const handleNext = () => {
@@ -146,21 +126,6 @@ const Exams = () => {
       setCurrentPage((prev) => prev - 1);
     }
   };
-
-  //GENERATES NEW EXAMS ON PAGE LOAD
-  useEffect(() => {
-    const generatedExams = generateExams();
-    setExams(generatedExams);
-    const groupedExamDates = groupExamDaysByMonth(generatedExams);
-    setGroupedExams(groupedExamDates);
-
-    const date = dayjs(new Date());
-    const monthIndex = date.month();
-    setCurrentMonth(monthIndex);
-    const daysForCurrentMonth = getDays(monthIndex, groupedExamDates);
-    setHighlightedDays(daysForCurrentMonth);
-  }, []);
-
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-x-10">
       <div className=" bg-orange-1 flex flex-1 flex-col items-center justify-start p-6 shadow-lg">
@@ -171,7 +136,7 @@ const Exams = () => {
               showDaysOutsideCurrentMonth
               fixedWeekNumber={6}
               views={["day"]}
-              onMonthChange={handleMonthChange}
+              //onMonthChange={handleMonthChange}
               onChange={(date) => handleDayClick(date)}
               sx={{
                 ".Mui-selected": {
@@ -203,14 +168,14 @@ const Exams = () => {
                 <BsBook className="text-white h-6 w-6" />
                 <h1 className="text-2xl text-white min-w-32 ">Subject</h1>
                 <h1 className="text-2xl text-white min-w-20">
-                  {selectedExam[currentPage].exam}
+                  {selectedExam[currentPage].subject}
                 </h1>
               </div>
               <div className="flex flex-row items-center space-x-5">
                 <IoPersonSharp className="text-white h-6 w-6" />
                 <h1 className="text-2xl text-white min-w-32 ">Teacher</h1>
                 <h1 className="text-2xl text-white min-w-20">
-                  {selectedExam[currentPage].teacher}
+                  {selectedExam[currentPage].teacher.name}
                 </h1>
               </div>
               <div className="flex flex-row items-center space-x-5">
@@ -224,7 +189,7 @@ const Exams = () => {
                 <CiClock2 className="text-white h-6 w-6" />
                 <h1 className="text-2xl text-white min-w-32 ">Hour</h1>
                 <h1 className="text-2xl text-white min-w-20">
-                  {selectedExam[currentPage].hour}
+                  {selectedExam[currentPage].startTime}
                 </h1>
               </div>
               <div className="flex flex-row items-center space-x-5">
