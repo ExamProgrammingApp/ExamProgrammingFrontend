@@ -23,6 +23,23 @@ export const createExam = async (examData, token) => {
   }
 };
 
+export const updateExam = async (examId, updateData, token) => {
+  try {
+    const response = await api.patch(`/exams/${examId}`, updateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating exam:", error);
+    if (error.response) {
+      console.error("Server error:", error.response.data);
+    }
+    throw error;
+  }
+};
+
 // Fetch exam by ID
 export const fetchExamById = async (id) => {
   try {
@@ -84,14 +101,16 @@ export const fetchExamsByGroupOrSubject = async (param) => {
     throw error;
   }
 };
-export const fetcheExamByTeacherId = async()=>{
-    try{
-        const response = await api.get("exams/teacher/teacherID",{ headers:{
-            Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
-        },});
-       return response.data;
-    }catch(error){
-        console.error("Error fetching exams by teacher id");
-        throw error;
-      }
+export const fetcheExamByTeacherId = async () => {
+  try {
+    const response = await api.get("exams/teacher/teacherID", {
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching exams by teacher id");
+    throw error;
   }
+}
