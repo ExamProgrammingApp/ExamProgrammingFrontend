@@ -15,7 +15,7 @@ const SideNavbar = ({ userType }) => {
   return (
     <div className="flex flex-col items-center space-y-6 sticky top-0 min-w-24 h-screen bg-blue-1 justify-start">
       <img src={logo} alt="Logo" className="w-[70px]" />
-      {(userType === "student" || userType === "headstudent") && (
+      {(userType === "student" || userType === "headstudent" || userType === "teacher") && (
         <Link to="/exams">
           <div
             className={`w-16 h-16 ${

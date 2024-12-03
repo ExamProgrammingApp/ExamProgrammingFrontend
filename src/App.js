@@ -56,8 +56,8 @@ function App() {
                     />
                   )}
 
-                  {/* PAGES ONLY FOR STUDENTS */}
-                  {(userType === "student" || userType === "headstudent") && (
+                  {/* PAGES ONLY FOR STUDENTS AND TEACHERS */}
+                  {(userType === "student" || userType === "headstudent" || userType === "teacher") && (
                     <Route
                       path="/exams"
                       element={<PrivateRoute element={<Exams />} />}
@@ -85,6 +85,7 @@ function App() {
                       element={<PrivateRoute element={<ConfirmExam />} />}
                     />
                   )}
+                  
                   {/* UNPROTECTED PAGES */}
                   <Route
                     path="/auth"
