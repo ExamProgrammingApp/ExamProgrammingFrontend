@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const api = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL, // Base URL from environment variables
 });
@@ -70,20 +71,49 @@ export const confirmExam = async (examData) => {
   }
 };
 
-// Delete an exam
-export const deleteExam = async (id) => {
+export const rejectExam = async (examId, token) => {
   try {
-    const response = await api.delete(`/exams/${id}`, {
+    const token = localStorage.getItem("access_token");
+    const response = await api.patch(`/exams/${examId}/reject`, null, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+        Authorization: `Bearer ${token}`,
       },
     });
+    return response.data;
+  } catch (error) {
+    console.error("Error rejecting exam:", error);
+    if (error.response) {
+      console.error("Server error:", error.response.data);
+    }
+    throw error;
+  }
+};
+
+
+// Delete an exam
+
+export const deleteExam = async (id) => {
+  try {
+    // Extragem token-ul din localStorage
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("Token not found in localStorage");
+    }
+
+    // Acum putem folosi `userId` și `id` examenului pentru a face cererea de ștergere
+    const response = await api.delete(`/exams/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Folosim token-ul complet
+      },
+    });
+
     return response.data;
   } catch (error) {
     console.error("Error deleting exam:", error);
     throw error;
   }
 };
+
 
 // Fetch exams by group or subject
 export const fetchExamsByGroupOrSubject = async (param) => {
