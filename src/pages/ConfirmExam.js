@@ -90,9 +90,9 @@ const ConfirmExam = () => {
                 }`}
               >
                 <td className="px-4 py-2">{exam.subject}</td>
-                <td className="px-4 py-2">{exam.teacher}</td>
+                <td className="px-4 py-2">{exam.teacher.name}</td>
                 <td className="px-4 py-2">{exam.group}</td>
-                <td className="px-4 py-2">{exam.hour}</td>
+                <td className="px-4 py-2">{exam.startTime}</td>
                 <td className="px-4 py-2">{exam.room || "N/A"}</td>
                 <td className="px-4 py-2 flex justify-center space-x-4">
                   <button
