@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import Modal from "../components/Modal";
-import { confirmExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
+import { confirmExam,rejectExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
 
 const ConfirmExam = () => {
   const [exams, setExams] = useState([]);
@@ -17,6 +17,7 @@ const ConfirmExam = () => {
       try {
         const examsData = await fetcheExamByTeacherId(); // Correct invocation
         if (Array.isArray(examsData)) {
+          console.log("Fetched exams:", examsData);
           setExams(examsData);
         } else {
           console.error("Invalid data format, expected an array:", examsData);
@@ -27,7 +28,7 @@ const ConfirmExam = () => {
         setExams([]); // Fallback to an empty array
       }
     };
-  
+
     loadExams();
   }, []);
 
@@ -40,11 +41,11 @@ const ConfirmExam = () => {
     setShowModal(true);
   };
 
-  const handleReject = async (id) => {
+  const handleReject = async (examId) => {
+    console.log("Rejecting exam with ID:", examId);
     try {
-      await deleteExam(id); // API call to delete the exam
-      setExams((prevExams) => prevExams.filter((exam) => exam.id !== id));
-    } catch (error) {
+      await rejectExam(examId); // API call to delete the exam
+      setExams((prevExams) => prevExams.filter((exam) => exam.examId !== examId));    } catch (error) {
       console.error("Error deleting exam:", error);
     }
   };
@@ -85,9 +86,8 @@ const ConfirmExam = () => {
             {currentExams.map((exam) => (
               <tr
                 key={exam.id}
-                className={`text-center border-b ${
-                  exam.confirmed === true ? "bg-green-100" : ""
-                }`}
+                className={`text-center border-b ${exam.confirmed === true ? "bg-green-100" : ""
+                  }`}
               >
                 <td className="px-4 py-2">{exam.subject}</td>
                 <td className="px-4 py-2">{exam.teacher.name}</td>
@@ -102,7 +102,10 @@ const ConfirmExam = () => {
                     <TbPencilMinus size={24} />
                   </button>
                   <button
-                    onClick={() => handleReject(exam.id)}
+                    onClick={() => {
+                      console.log("Exam ID: ", exam.id);  // Verifică dacă ID-ul este corect
+                      handleReject(exam.examId);
+                    }}
                     className="text-red-600 hover:text-red-800"
                   >
                     <IoClose size={24} />
