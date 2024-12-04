@@ -13,6 +13,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { updateExam } from "../api";
 
 const timeOptions = [
   "08:00",
@@ -98,7 +99,12 @@ const EditExams = () => {
   useEffect(() => {
     const fetchRejectedExams = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/exams/status/rejected`);
+        const token = localStorage.getItem("access_token");
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/exams/status/rejected`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         // Ensure response data is not empty or malformed
         if (Array.isArray(response.data) && response.data.length > 0) {
@@ -132,9 +138,35 @@ const EditExams = () => {
     setCalendarDate(selectedDate);
   };
 
-  const handleEditClick = () => {
-    //Necessary validation
-    notify("Edit made successfully");
+  const handleEditClick = async () => {
+    if (!selectedExam) {
+      console.error("No exam selected for editing");
+      return;
+    }
+
+    const token = localStorage.getItem("access_token");
+
+    const updatedData = {
+      date: calendarDate ? calendarDate.format("YYYY-MM-DD") : null,
+      startTime: selectedTime,
+    };
+
+    try {
+      const updatedExam = await updateExam(selectedExam.examId, updatedData, token);
+      notify("Exam updated successfully");
+
+      const updatedExams = exams.map((exam) =>
+        exam.examId === selectedExam.examId ? { ...exam, ...updatedData } : exam
+      );
+      setExams(updatedExams);
+      setSelectedExam(null);
+      setSelectedExamIndex(null);
+      setCalendarDate(null);
+      setSelectedTime(null);
+    } catch (error) {
+      console.error("Failed to update exam:", error);
+      notify("Failed to update exam");
+    }
   };
 
   const handleChangePage = (event, newPage) => {

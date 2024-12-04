@@ -75,13 +75,13 @@ const Exams = () => {
         return dayjs(dateObj).format("YYYY-MM-DD");
       });
       console.log("Exam Days:", examDays);
-        setHighlightedDays(examDays);
-  
+      setHighlightedDays(examDays);
+
     } catch (error) {
       console.error("Error fetching exams:", error.response || error.message);
     }
   };
-  
+
   const fetchExamsByDate = async (date) => {
     try {
       const response = await axios.get(
@@ -99,9 +99,9 @@ const Exams = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect fired"); 
+    console.log("useEffect fired");
     const token = localStorage.getItem("access_token");
-    console.log('Token:', token); 
+    console.log('Token:', token);
     if (token) {
       fetchExams();
     } else {
@@ -204,11 +204,10 @@ const Exams = () => {
                   <button
                     onClick={handlePrev}
                     disabled={currentPage === 0}
-                    className={`px-4 py-2 rounded ${
-                      currentPage === 0
-                        ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-white"
-                    }`}
+                    className={`px-4 py-2 rounded ${currentPage === 0
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-white"
+                      }`}
                   >
                     Prev
                   </button>
@@ -221,11 +220,10 @@ const Exams = () => {
                   <button
                     onClick={handleNext}
                     disabled={currentPage === selectedExam.length - 1}
-                    className={`px-4 py-2 rounded ${
-                      currentPage === selectedExam.length - 1
-                        ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-white"
-                    }`}
+                    className={`px-4 py-2 rounded ${currentPage === selectedExam.length - 1
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-white"
+                      }`}
                   >
                     Next
                   </button>
