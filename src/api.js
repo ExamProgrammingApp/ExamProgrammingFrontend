@@ -45,7 +45,7 @@ export const fetchExamById = async (id) => {
   try {
     const response = await api.get(`/exams/${id}`, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`, // Use your JWT token logic
+        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
       },
     });
     return response.data;
@@ -103,9 +103,14 @@ export const fetchExamsByGroupOrSubject = async (param) => {
 };
 export const fetcheExamByTeacherId = async () => {
   try {
+    const token = localStorage.getItem("access_token");
+      console.log("Token", token);
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
     const response = await api.get("exams/teacher/teacherID", {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
