@@ -4,7 +4,7 @@ import { IoPeopleSharp, IoPersonSharp } from "react-icons/io5";
 import { CiClock2 } from "react-icons/ci";
 import { FaHouseChimney } from "react-icons/fa6";
 
-const Modal = ({ exam, onClose, onSubmit }) => {
+const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
   const [assistant, setAssistant] = useState("");
   const [room, setRoom] = useState("");
 
@@ -63,7 +63,7 @@ const Modal = ({ exam, onClose, onSubmit }) => {
             <CiClock2 className="text-white h-6 w-6" />
             <h2 className="text-lg">Hour:</h2>
           </div>
-          <h2 className="text-lg">{exam.hour}</h2>
+          <h2 className="text-lg">{exam.startTime}</h2>
 
           {/* Assistant Field */}
           <div className="col-span-2">
@@ -71,12 +71,18 @@ const Modal = ({ exam, onClose, onSubmit }) => {
               <IoPersonSharp className="text-white h-6 w-6" />
               <span>Assistant</span>
             </label>
-            <input
-              type="text"
+            <select
               value={assistant}
               onChange={(e) => setAssistant(e.target.value)}
-              className="w-full p-2 rounded border border-orange-1 bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
-            />
+              className="w-full p-2 rounded border border-orange-1 bg-blue-1 text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
+            >
+              <option value="">Select Assistant</option>
+              {teachers.map((teacher) => (
+                <option key={teacher.id} value={teacher.id}>
+                  {teacher.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Room Field */}
@@ -85,12 +91,18 @@ const Modal = ({ exam, onClose, onSubmit }) => {
               <FaHouseChimney className="text-white h-6 w-6" />
               <span>Room</span>
             </label>
-            <input
-              type="text"
+            <select
               value={room}
               onChange={(e) => setRoom(e.target.value)}
-              className="w-full p-2 rounded border border-orange-1 bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
-            />
+              className="w-full p-2 rounded border border-orange-1 bg-[#2e3a59] text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
+            >
+              <option value="">Select Room</option>
+              {rooms.map((roomItem) => (
+                <option key={roomItem.id} value={roomItem.id}>
+                  {roomItem.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

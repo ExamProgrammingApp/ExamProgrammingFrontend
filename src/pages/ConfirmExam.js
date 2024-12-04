@@ -3,12 +3,16 @@ import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import Modal from "../components/Modal";
 import { confirmExam,rejectExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
+import axios from "axios";
 
 const ConfirmExam = () => {
   const [exams, setExams] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
+  const [teachers, setTeachers] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
   const itemsPerPage = 10;
 
   // Fetch exams when the component mounts
@@ -29,7 +33,27 @@ const ConfirmExam = () => {
       }
     };
 
+    const fetchTeachers = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/teachers`);
+        setTeachers(response.data);
+      } catch (error) {
+        console.error("Error fetching teachers:", error);
+      }
+    };
+
+    const fetchRooms = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/rooms`);
+        setRooms(response.data); // Setează camerele în state
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      }
+    };
+
+    fetchRooms();
     loadExams();
+    fetchTeachers(); // Fetch the teachers list
   }, []);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -54,6 +78,7 @@ const ConfirmExam = () => {
     try {
       const confirmedExam = await confirmExam({
         ...updatedExam,
+        teacherId: selectedTeacher,
         confirmed: true,
       });
       setExams((prevExams) =>
@@ -139,6 +164,8 @@ const ConfirmExam = () => {
             exam={selectedExam}
             onClose={() => setShowModal(false)}
             onSubmit={handleModalSubmit}
+            teachers={teachers}
+            rooms={rooms} 
           />
         )}
       </div>
