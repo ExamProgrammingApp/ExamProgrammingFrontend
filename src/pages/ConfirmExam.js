@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import Modal from "../components/Modal";
-import { confirmExam,rejectExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
+import { confirmExam, rejectExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
 import axios from "axios";
 
 const ConfirmExam = () => {
@@ -12,7 +12,8 @@ const ConfirmExam = () => {
   const [selectedExam, setSelectedExam] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState(null); // Stochează profesorul selectat
+  const [selectedRoom, setSelectedRoom] = useState(null);
   const itemsPerPage = 10;
 
   // Fetch exams when the component mounts
@@ -60,7 +61,7 @@ const ConfirmExam = () => {
   const currentExams = exams.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(exams.length / itemsPerPage);
 
-  const handleConfirm = (exam) => {
+  const handleConfirm = async (exam) => {
     setSelectedExam(exam);
     setShowModal(true);
   };
@@ -69,24 +70,31 @@ const ConfirmExam = () => {
     console.log("Rejecting exam with ID:", examId);
     try {
       await rejectExam(examId); // API call to delete the exam
-      setExams((prevExams) => prevExams.filter((exam) => exam.examId !== examId));    } catch (error) {
+      setExams((prevExams) => prevExams.filter((exam) => exam.examId !== examId));
+    } catch (error) {
       console.error("Error deleting exam:", error);
     }
   };
 
-  const handleModalSubmit = async (updatedExam) => {
+  const handleModalSubmit = async ({ teacherAssistent, roomIds, examId }) => {
     try {
-      const confirmedExam = await confirmExam({
-        ...updatedExam,
-        teacherId: selectedTeacher,
-        confirmed: true,
-      });
+      console.log("Submitting to confirmExam:", examId);
+
+      await confirmExam(
+        { teacherAssistent, roomIds }, 
+        examId 
+      );
+
+   
       setExams((prevExams) =>
         prevExams.map((exam) =>
-          exam.id === confirmedExam.id ? confirmedExam : exam
+          exam.id === examId
+            ? { ...exam, confirmed: true, room: roomIds, teacherAssistent }
+            : exam
         )
       );
-      setShowModal(false);
+
+      setShowModal(false); 
     } catch (error) {
       console.error("Error confirming exam:", error);
     }
@@ -128,7 +136,7 @@ const ConfirmExam = () => {
                   </button>
                   <button
                     onClick={() => {
-                      console.log("Exam ID: ", exam.id);  // Verifică dacă ID-ul este corect
+                    
                       handleReject(exam.examId);
                     }}
                     className="text-red-600 hover:text-red-800"
@@ -165,7 +173,7 @@ const ConfirmExam = () => {
             onClose={() => setShowModal(false)}
             onSubmit={handleModalSubmit}
             teachers={teachers}
-            rooms={rooms} 
+            rooms={rooms}
           />
         )}
       </div>
