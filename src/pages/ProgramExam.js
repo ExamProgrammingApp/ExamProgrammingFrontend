@@ -35,13 +35,50 @@ const ScheduleExam = () => {
     fetchTeachers();
   }, []);
 
+  useEffect(() => {
+    const fetchUserGroup = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          console.error("No authentication token found");
+          return;
+        }
+
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/students/tokenId`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userGroup = response.data.group;
+        setFormData((prev) => ({ ...prev, group: userGroup }));
+      } catch (error) {
+        console.error("Error fetching user group:", error);
+      }
+    };
+
+    fetchUserGroup();
+  }, []);
+
   const notifySuccess = (text = "Success") => toast.success(text);
   const notifyFailed = (text = "Operation Failed") => toast.error(text);
 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(`Input change - ${name}: ${value}`);
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "teacher") {
+
+      const selectedTeacher = teachers.find((teacher) => teacher.teacherId === value);
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        subject: selectedTeacher ? selectedTeacher.subject : "",
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleDateChange = (date) => {
@@ -237,8 +274,13 @@ const ScheduleExam = () => {
                 className="block w-full pl-3 bg-white border-2 border-gray-400 rounded-lg h-10"
               >
                 <option value="">Select</option>
-                <option value="math">Mathematics</option>
-                <option value="physics">Physics</option>
+                {teachers
+                  .filter((teacher) => teacher.teacherId === formData.teacher)
+                  .map((teacher) => (
+                    <option key={teacher.teacherId} value={teacher.subject}>
+                      {teacher.subject}
+                    </option>
+                  ))}
               </select>
             </div>
             {/* Group */}
@@ -246,16 +288,13 @@ const ScheduleExam = () => {
               <label className="block text-lg font-medium text-gray-800">
                 Group
               </label>
-              <select
+              <input
+                type="text"
                 name="group"
                 value={formData.group}
-                onChange={handleInputChange}
-                className="block w-full bg-white border-2 pl-3 border-gray-400 rounded-lg h-10"
-              >
-                <option value="">Select</option>
-                <option value="a1">Group A1</option>
-                <option value="b1">Group B1</option>
-              </select>
+                disabled
+                className="block w-full bg-gray-100 border-2 pl-3 border-gray-400 rounded-lg h-10 cursor-not-allowed"
+              />
             </div>
 
             {/* Nr. of Students */}
