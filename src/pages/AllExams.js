@@ -34,13 +34,17 @@ const orderExams = (exams) => {
 };
 
 const AllExams = () => {
+  const [usedFilters, setUsedFilters] = useState([]);
   const [exams, setExams] = useState([]);
+  const [showExams, setShowExams] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
-    setExams(orderExams(generateExams()));
+    const result = orderExams(generateExams());
+    setExams(result);
+    setShowExams(result);
   }, []);
 
   const ShowModal = () => {
@@ -49,6 +53,7 @@ const AllExams = () => {
 
   const handleModalSubmit = (filters) => {
     let filteredExams = [...exams];
+    console.log(filters);
 
     filters.forEach(({ filter, value }) => {
       if (filter === "Group") {
@@ -61,22 +66,23 @@ const AllExams = () => {
         filteredExams = filteredExams.filter((exam) => exam.room === value);
       }
     });
-    setExams(filteredExams);
+    setShowExams(filteredExams);
+    setUsedFilters(filters);
     setCurrentPage(1);
 
     setShowModal(false);
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentExams = exams.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(exams.length / itemsPerPage);
+  const currentExams = showExams.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(showExams.length / itemsPerPage);
 
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-x-10">
       <div className="flex-1 bg-blue-1 flex flex-col items-center justify-center p-3 shadow-lg">
         <div className="flex flex-row w-full items-center relative">
           <h1 className="text-4xl font-sans text-white absolute left-1/2 transform -translate-x-1/2">
-            Confirm Exam
+            Exams
           </h1>
           <button
             onClick={() => ShowModal()}
@@ -137,6 +143,7 @@ const AllExams = () => {
           <FilterModal
             onClose={() => setShowModal(false)}
             onSubmit={handleModalSubmit}
+            usedFilters={usedFilters}
           />
         )}
       </div>
