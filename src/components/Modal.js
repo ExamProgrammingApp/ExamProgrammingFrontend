@@ -17,7 +17,15 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
   }, []);
 
   const handleSubmit = () => {
-    onSubmit({ ...exam, assistant, room });
+    if (!assistant || !room) {
+      console.error("Assistant or Room not selected.");
+      return; // Nu trimite date dacă unul dintre câmpuri este gol
+    }
+    onSubmit({
+      teacherAssistent: assistant, 
+      roomIds: [room], 
+      examId: exam.examId, 
+    });
   };
 
   const handleReset = () => {
@@ -78,7 +86,7 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
             >
               <option value="">Select Assistant</option>
               {teachers.map((teacher) => (
-                <option key={teacher.id} value={teacher.id}>
+                <option key={teacher.teacherId} value={teacher.teacherId}>
                   {teacher.name}
                 </option>
               ))}
@@ -98,7 +106,7 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
             >
               <option value="">Select Room</option>
               {rooms.map((roomItem) => (
-                <option key={roomItem.id} value={roomItem.id}>
+                <option key={roomItem.roomId} value={roomItem.roomId}>
                   {roomItem.name}
                 </option>
               ))}

@@ -57,11 +57,12 @@ export const fetchExamById = async (id) => {
 };
 
 // Confirm an exam
-export const confirmExam = async (examData) => {
+export const confirmExam = async (examData, examId) => {
   try {
-    const response = await api.post("/exams", examData, {
+    const token = localStorage.getItem("access_token");
+    const response = await api.patch(`/teachers/${examId}/room`, examData, {
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_API_TOKEN}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -134,10 +135,10 @@ export const fetchExamsByGroupOrSubject = async (param) => {
 export const fetcheExamByTeacherId = async () => {
   try {
     const token = localStorage.getItem("access_token");
-      console.log("Token", token);
-      if (!token) {
-        throw new Error("No authentication token found");
-      }
+    console.log("Token", token);
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
     const response = await api.get("exams/teacher/teacherID", {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -196,7 +196,9 @@ const Exams = () => {
                 <FaHouseChimney className="text-white h-6 w-6" />
                 <h1 className="text-2xl text-white min-w-32 ">Room</h1>
                 <h1 className="text-2xl text-white min-w-20">
-                  {selectedExam[currentPage].room}
+                  <h1 className="text-2xl text-white min-w-20">
+                    {selectedExam[currentPage].rooms?.map(room => room.name).join(', ') || 'N/A'}
+                  </h1>
                 </h1>
               </div>
               {selectedExam.length > 1 && (
