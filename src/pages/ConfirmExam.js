@@ -81,20 +81,16 @@ const ConfirmExam = () => {
       console.log("Submitting to confirmExam:", examId);
 
       await confirmExam(
-        { teacherAssistent, roomIds }, 
-        examId 
+        { teacherAssistent, roomIds },
+        examId
       );
 
-   
+
       setExams((prevExams) =>
-        prevExams.map((exam) =>
-          exam.id === examId
-            ? { ...exam, confirmed: true, room: roomIds, teacherAssistent }
-            : exam
-        )
+        prevExams.filter((exam) => exam.examId !== examId)
       );
 
-      setShowModal(false); 
+      setShowModal(false);
     } catch (error) {
       console.error("Error confirming exam:", error);
     }
@@ -136,7 +132,7 @@ const ConfirmExam = () => {
                   </button>
                   <button
                     onClick={() => {
-                    
+
                       handleReject(exam.examId);
                     }}
                     className="text-red-600 hover:text-red-800"
