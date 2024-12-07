@@ -110,7 +110,7 @@ const ScheduleExam = () => {
   return (
     <div className="flex h-[calc(100vh-64px)] bg-gray-1">
       {/* Main Content */}
-      <div className="flex flex-col flex-1 p-8">
+      <div className="flex flex-col flex-1 p-8 justify-center">
         <h1 className="text-5xl font-handwriting mb-5 text-gray-900">
           Schedule an exam
         </h1>

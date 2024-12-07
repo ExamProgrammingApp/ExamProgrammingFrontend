@@ -3,6 +3,16 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useAuth, getUserPath } from "./AuthContext";
 import axios from "axios";
+import { getUserById } from "../api";
+
+async function saveName(id) {
+  try {
+    const response = await getUserById(id);
+    localStorage.setItem("userName", JSON.stringify(response["name"]));
+  } catch (error) {
+    console.error("Error saving name: ", error);
+  }
+}
 
 const defaultUser = { "user@user.com": { password: "user", role: "user" } };
 
@@ -30,13 +40,12 @@ const Auth = ({ onLogin }) => {
           password,
         }
       );
-
-      console.log("Response:", response);
-
       const { access_token, role } = response.data;
 
       if (access_token) {
         console.log("Token obținut:", access_token);
+
+        saveName(response.data["id"]);
 
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("role", role);
