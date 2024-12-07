@@ -1,18 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUserPath } from "../auth/AuthContext";
 
 const PageNotFound = ({ resetUser }) => {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState();
 
   const handleGoBack = () => {
-    const user = localStorage.getItem("userType");
-    if (user === "teacher") navigate("/confirm_exam");
-    else navigate("/exams");
+    navigate(getUserPath(userRole));
   };
 
   useEffect(() => {
-    const user = localStorage.getItem("userType");
-    resetUser(user);
+    const storedUser = localStorage.getItem("user");
+    const user = JSON.parse(storedUser);
+    setUserRole(user.role);
+    resetUser(user.role);
   }, []);
 
   return (

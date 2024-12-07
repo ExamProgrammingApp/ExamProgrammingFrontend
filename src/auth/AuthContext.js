@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("role");
     localStorage.removeItem("token");
   };
 
@@ -29,3 +30,15 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+export function getUserPath(role) {
+  switch (role) {
+    case "teacher":
+      return "/confirm_exam";
+    case "headstudent":
+      return "/exams";
+    case "student":
+      return "/exams";
+    case "user":
+      return "/all_exams";
+  }
+}

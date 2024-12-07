@@ -20,12 +20,13 @@ const ScheduleExam = () => {
     date: null,
   });
 
-
   const [teachers, setTeachers] = useState([]);
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/teachers`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/teachers`
+        );
         setTeachers(response.data);
       } catch (error) {
         console.error("Error fetching teachers:", error);
@@ -113,9 +114,7 @@ const ScheduleExam = () => {
       date: formData.date,
     };
 
-
     try {
-
       const token = localStorage.getItem("access_token");
       console.log("Token", token);
       if (!token) {
