@@ -1,7 +1,7 @@
 import AuthImage from "../assets/images/auth_img.png";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth, getUserPath } from "./AuthContext";
 import axios from "axios";
 
 const defaultUser = { "user@user.com": { password: "user", role: "user" } };
@@ -42,13 +42,7 @@ const Auth = ({ onLogin }) => {
         localStorage.setItem("role", role);
         login({ email, role, token: access_token });
         setUserType(role);
-        if (role === "teacher") {
-          navigate("/confirm_exam");
-        } else if (role === "headstudent") {
-          navigate("/modify_exam");
-        } else if (role === "student") {
-          navigate("/exams");
-        }
+        navigate(getUserPath(role));
       }
     } catch (error) {
       alert("Credențiale invalide!");
@@ -60,8 +54,7 @@ const Auth = ({ onLogin }) => {
     const user = defaultUser["user@user.com"];
     login({ email, role: user.role });
     onLogin(user.role);
-
-    navigate("/all_exams");
+    navigate(getUserPath(user.role));
   };
 
   return (
