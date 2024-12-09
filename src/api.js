@@ -4,6 +4,18 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL, // Base URL from environment variables
 });
 
+// Fetch all exams (no authentication required)
+export const fetchAllExams = async () => {
+  try {
+    const response = await api.get("/exams/public");  // Public endpoint
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all exams:", error);
+    throw error;
+  }
+};
+
+
 // Create an exam
 export const createExam = async (examData, token) => {
   try {
