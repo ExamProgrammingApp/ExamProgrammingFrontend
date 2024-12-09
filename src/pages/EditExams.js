@@ -100,11 +100,14 @@ const EditExams = () => {
     const fetchRejectedExams = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/exams/status/rejected`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/exams/status/rejected`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         // Ensure response data is not empty or malformed
         if (Array.isArray(response.data) && response.data.length > 0) {
@@ -152,7 +155,11 @@ const EditExams = () => {
     };
 
     try {
-      const updatedExam = await updateExam(selectedExam.examId, updatedData, token);
+      const updatedExam = await updateExam(
+        selectedExam.examId,
+        updatedData,
+        token
+      );
       notify("Exam updated successfully");
 
       const updatedExams = exams.map((exam) =>
@@ -187,10 +194,9 @@ const EditExams = () => {
     setSelectedTime(exam.hour);
   };
 
-
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-y-5">
-      <div className="bg-blue-1 w-full h-full p-2 flex flex-col">
+      <div className="bg-blue-1 w-full h-full p-2 flex flex-col justify-center">
         <div className="flex flex-row justify-evenly items-center">
           <div className="w-2/3 p-2 ">
             <h1 className="text-4xl font-sans text-white pb-5 text-center">
@@ -220,14 +226,19 @@ const EditExams = () => {
                     return (
                       <TableRow
                         key={exam.examId}
-                        className={`cursor-pointer ${selectedExam?.examId === exam.examId ? "bg-orange-1 text-white" : "bg-white text-black"
-                          }`}
+                        className={`cursor-pointer ${
+                          selectedExam?.examId === exam.examId
+                            ? "bg-orange-1 text-white"
+                            : "bg-white text-black"
+                        }`}
                         onClick={() => SelectExam(exam)}
                       >
                         {columns.map((column) => {
                           let value;
                           if (column.id === "teacher") {
-                            value = exam.teacher ? exam.teacher.name : "No Teacher";
+                            value = exam.teacher
+                              ? exam.teacher.name
+                              : "No Teacher";
                           } else if (column.id === "exam") {
                             value = exam.subject || exam.exam || "No Subject";
                           } else {
@@ -236,7 +247,9 @@ const EditExams = () => {
 
                           return (
                             <TableCell key={column.id} align={column.align}>
-                              {column.id === 'date' ? dayjs(exam[column.id]).format("DD-MM-YYYY") : value}
+                              {column.id === "date"
+                                ? dayjs(exam[column.id]).format("DD-MM-YYYY")
+                                : value}
                             </TableCell>
                           );
                         })}
