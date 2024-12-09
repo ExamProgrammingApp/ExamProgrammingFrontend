@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 
 function getData(setGroups, setTeachers, setSubjects, setRooms) {
   //GET DATA FROM DATABASE
 
-  setGroups(["3141A", "3141B", "3142A", "3142B"]);
-  setTeachers(["Andrei", "Marian", "Radu", "Ionut", "Darius"]);
-  setSubjects(["IP", "CMO", "SI", "PDB", "SIIEP"]);
-  setRooms(["101", "202", "303", "404", "505"]);
+  axios
+    .get(`${process.env.REACT_APP_BACKEND_URL}/exams/public`) 
+    .then((response) => {
+      const groups = response.data.map((exam) => exam.group);
+      setGroups([...new Set(groups)]);  
+      const subjects = response.data.map((exam) => exam.subject);
+      setSubjects([...new Set(subjects)]);  
+      const teachers = response.data.map((exam) => exam.teacher.name);
+      setTeachers([...new Set(teachers)]);
+      const rooms = response.data.map((exam) => exam.rooms?.map(room => room.name).join(', ') || 'N/A');
+      setRooms([...new Set(rooms)]);
+    })
+    .catch((error) => {
+      console.error("Error fetching exams:", error);
+    });
+
 }
 
 const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
@@ -28,31 +42,15 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
   // Prevent scrolling on the background when modal is open
   useEffect(() => {
     //GET DATA FROM API
-    getData(setGroups, setTeachers, setSubjects, setRooms);
 
-    if (usedFilters && usedFilters.length > 0) {
-      usedFilters.forEach(({ filter, value }) => {
-        if (filter === "Group") {
-          setSelectedGroup(value);
-          setGroupChecked(true);
-        } else if (filter === "Teacher") {
-          setSelectedTeacher(value);
-          setTeacherChecked(true);
-        } else if (filter === "Subject") {
-          setSelectedSubject(value);
-          setSubjectChecked(true);
-        } else if (filter === "Room") {
-          setSelectedRoom(value);
-          setRoomChecked(true);
-        }
-      });
-    }
+    getData(setGroups, setTeachers, setSubjects, setRooms);
 
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [usedFilters]);
+  }, []);
+
 
   const handleSubmit = () => {
     const selectedFilters = [];
