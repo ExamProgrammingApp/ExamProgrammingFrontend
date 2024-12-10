@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { FaRegBell } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
@@ -9,6 +9,7 @@ import LogoutModal from "./LogoutModal";
 import { useNavigate } from "react-router-dom";
 
 const TopNavbar = ({ userType }) => {
+  const [userName, setUserName] = useState("");
   const [notificationsButton, setNotificationsButton] = useState(false);
   const [profileButton, setProfileButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +18,14 @@ const TopNavbar = ({ userType }) => {
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(JSON.parse(storedName));
+    }
+  }, []);
+
   //Path without navbar
   if (location.pathname === "/auth") return null;
 
@@ -41,12 +50,6 @@ const TopNavbar = ({ userType }) => {
     setNotificationsButton(false);
     setProfileButton(false);
   };
-
-  // const logOut = () => {
-  //   toggleFalse();
-  //   logout();
-  // };
-
   const ShowModal = () => {
     setShowModal(true);
   };
@@ -73,7 +76,9 @@ const TopNavbar = ({ userType }) => {
           }`}
           onClick={() => toggleProfileButton()}
         />
-        <h1 className="text-1xl text-white">{userType}</h1>
+        {userType !== "user" && (
+          <h1 className="text-1xl text-white">{userName}</h1>
+        )}
       </div>
       {notificationsButton && (
         <div className="fixed top-16 right-0 bg-orange-1 min-w-60 w-fit max-h-40 h-fit overflow-auto space-y-1">

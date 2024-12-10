@@ -1,9 +1,20 @@
 import axios from "axios";
 
-
 const api = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL, // Base URL from environment variables
 });
+
+// Fetch all exams (no authentication required)
+export const fetchAllExams = async () => {
+  try {
+    const response = await api.get("/exams/public");  // Public endpoint
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all exams:", error);
+    throw error;
+  }
+};
+
 
 // Create an exam
 export const createExam = async (examData, token) => {
@@ -90,7 +101,6 @@ export const rejectExam = async (examId, token) => {
   }
 };
 
-
 // Delete an exam
 
 export const deleteExam = async (id) => {
@@ -114,7 +124,6 @@ export const deleteExam = async (id) => {
     throw error;
   }
 };
-
 
 // Fetch exams by group or subject
 export const fetchExamsByGroupOrSubject = async (param) => {
@@ -149,4 +158,23 @@ export const fetcheExamByTeacherId = async () => {
     console.error("Error fetching exams by teacher id");
     throw error;
   }
-}
+};
+
+export const getUserById = async (id) => {
+  try {
+    const token = localStorage.getItem("access_token");
+    console.log("Token", token);
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    const response = await api.get(`users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error user by id");
+    throw error;
+  }
+};
