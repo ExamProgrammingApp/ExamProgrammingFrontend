@@ -91,8 +91,9 @@ const AllExams = () => {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentExams = exams.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(exams.length / itemsPerPage);
+
+  const currentExams = showExams.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(exams.length / itemsPerPage));
 
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-x-10">

@@ -59,7 +59,7 @@ const ConfirmExam = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentExams = exams.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(exams.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(exams.length / itemsPerPage));
 
   const handleConfirm = async (exam) => {
     setSelectedExam(exam);
