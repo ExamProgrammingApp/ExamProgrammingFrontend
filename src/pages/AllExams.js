@@ -84,8 +84,6 @@ const AllExams = () => {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-
-  console.log(exams);
   const currentExams = exams.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.max(1, Math.ceil(exams.length / itemsPerPage));
 
