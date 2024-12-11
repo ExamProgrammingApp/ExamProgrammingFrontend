@@ -28,8 +28,7 @@ const AllExams = () => {
     const fetchExams = async () => {
       try {
         let examsData = [];
-        console.log("Url params: ", urlParam);
-
+        
         if (urlParam) {
           console.log("Apelare API pentru exams by teacher id: " + urlParam);
           examsData = await fetchExamByTeacherId(urlParam); // Call the API function
