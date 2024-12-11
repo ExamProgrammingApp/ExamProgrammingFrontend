@@ -48,7 +48,7 @@ function App() {
                     }
                   />
                   {/* PAGES FOR UNREGISTERED USERS */}
-                  {userType === "user" && (
+                  {(userType === "user" || userType === "headstudent") && (
                     <Route
                       path="/all_exams"
                       element={<PrivateRoute element={<AllExams />} />}
