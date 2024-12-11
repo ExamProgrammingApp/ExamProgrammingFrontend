@@ -83,12 +83,12 @@ const Auth = ({ onLogin }) => {
           >
             Continue without login
           </button>
-          <button
+          {/* <button
             className="bg-orange-1 text-white text-lg font-semibold py-3 px-6 rounded-md hover:bg-orange-500"
             onClick={() => signIn()}
           >
             Sign in
-          </button>
+          </button> */}
           <div className="text-white text-lg font-semibold">OR</div>
           <input
             type="text"

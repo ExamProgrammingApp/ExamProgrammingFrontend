@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createExam } from "../api";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ScheduleExam = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ const ScheduleExam = () => {
     duration: "",
     date: null,
   });
+  const navigate = useNavigate();
 
   const [teachers, setTeachers] = useState([]);
   useEffect(() => {
@@ -144,6 +146,13 @@ const ScheduleExam = () => {
     );
   };
 
+  const seeTeacherSchedule = () => {
+    console.log(formData.teacher);
+    if (formData.teacher && formData.teacher != null) {
+      navigate(`/all_exams?teacher=${formData.teacher}`);
+    }
+  };
+
   return (
     <div className="flex h-[calc(100vh-64px)] bg-gray-1">
       {/* Main Content */}
@@ -180,6 +189,7 @@ const ScheduleExam = () => {
                 <button
                   type="button"
                   className="text-lg font-medium text-white bg-yellow-500 rounded-r-lg hover:bg-yellow-600 flex-shrink-0 h-10 min-w-52 w-1/2"
+                  onClick={seeTeacherSchedule}
                 >
                   See teacher's schedule
                 </button>

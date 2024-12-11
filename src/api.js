@@ -7,14 +7,13 @@ const api = axios.create({
 // Fetch all exams (no authentication required)
 export const fetchAllExams = async () => {
   try {
-    const response = await api.get("/exams/public");  // Public endpoint
+    const response = await api.get("/exams/public"); // Public endpoint
     return response.data;
   } catch (error) {
     console.error("Error fetching all exams:", error);
     throw error;
   }
 };
-
 
 // Create an exam
 export const createExam = async (examData, token) => {
@@ -149,6 +148,25 @@ export const fetcheExamByTeacherId = async () => {
       throw new Error("No authentication token found");
     }
     const response = await api.get("exams/teacher/teacherID", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching exams by teacher id");
+    throw error;
+  }
+};
+
+export const fetchExamByTeacherId = async (id) => {
+  try {
+    const token = localStorage.getItem("access_token");
+    console.log("Token", token);
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    const response = await api.get(`exams/student/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
