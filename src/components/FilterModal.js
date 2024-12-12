@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
 function getData(setGroups, setTeachers, setSubjects, setRooms) {
   //GET DATA FROM DATABASE
 
   axios
-    .get(`${process.env.REACT_APP_BACKEND_URL}/exams/public`) 
+    .get(`${process.env.REACT_APP_BACKEND_URL}/exams/public`)
     .then((response) => {
       const groups = response.data.map((exam) => exam.group);
-      setGroups([...new Set(groups)]);  
+      setGroups([...new Set(groups)]);
       const subjects = response.data.map((exam) => exam.subject);
-      setSubjects([...new Set(subjects)]);  
+      setSubjects([...new Set(subjects)]);
       const teachers = response.data.map((exam) => exam.teacher.name);
       setTeachers([...new Set(teachers)]);
-      const rooms = response.data.map((exam) => exam.rooms?.map(room => room.name).join(', ') || 'N/A');
+      const rooms = response.data.map(
+        (exam) => exam.rooms?.map((room) => room.name).join(", ") || "N/A"
+      );
       setRooms([...new Set(rooms)]);
     })
     .catch((error) => {
       console.error("Error fetching exams:", error);
     });
-
 }
 
 const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
@@ -50,7 +50,6 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
       document.body.style.overflow = "auto";
     };
   }, []);
-
 
   const handleSubmit = () => {
     const selectedFilters = [];
@@ -113,7 +112,7 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
               checked={groupChecked}
               onChange={(e) => setGroupChecked(e.target.checked)}
             />
-            <h1 className="text-white text-3xl">Group</h1>
+            <h1 className="text-white text-3xl min-w-28">Group</h1>
             <select
               value={selectedGroup}
               onChange={handleGroupChange}
@@ -136,7 +135,7 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
               checked={teacherChecked}
               onChange={(e) => setTeacherChecked(e.target.checked)}
             />
-            <h1 className="text-white text-3xl">Teacher</h1>
+            <h1 className="text-white text-3xl min-w-28">Teacher</h1>
             <select
               value={selectedTeacher}
               onChange={handleTeacherChange}
@@ -160,7 +159,7 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
               checked={subjectChecked}
               onChange={(e) => setSubjectChecked(e.target.checked)}
             />
-            <h1 className="text-white text-3xl">Subject</h1>
+            <h1 className="text-white text-3xl min-w-28">Subject</h1>
             <select
               value={selectedSubject}
               onChange={handleSubjectChange}
@@ -184,7 +183,7 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
               checked={roomChecked}
               onChange={(e) => setRoomChecked(e.target.checked)}
             />
-            <h1 className="text-white text-3xl">Room</h1>
+            <h1 className="text-white text-3xl min-w-28">Room</h1>
             <select
               value={selectedRoom}
               onChange={handleRoomChange}

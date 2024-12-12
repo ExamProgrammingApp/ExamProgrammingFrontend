@@ -45,7 +45,7 @@ const Auth = ({ onLogin }) => {
       if (access_token) {
         console.log("Token obținut:", access_token);
 
-        saveName(response.data["id"]);
+        await saveName(response.data["id"]);
 
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("role", role);

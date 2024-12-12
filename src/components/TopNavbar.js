@@ -1,22 +1,19 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { FaRegBell } from "react-icons/fa";
-import { CgProfile } from "react-icons/cg";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import { useAuth } from "../auth/AuthContext";
 import LogoutModal from "./LogoutModal";
 import { useNavigate } from "react-router-dom";
+import { TbLogout } from "react-icons/tb";
 
 const TopNavbar = ({ userType }) => {
   const [userName, setUserName] = useState("");
   const [notificationsButton, setNotificationsButton] = useState(false);
-  const [profileButton, setProfileButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { logout } = useAuth();
-
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
@@ -24,7 +21,7 @@ const TopNavbar = ({ userType }) => {
     if (storedName) {
       setUserName(JSON.parse(storedName));
     }
-  }, []);
+  }, [location.pathname]);
 
   //Path without navbar
   if (location.pathname === "/auth") return null;
@@ -38,20 +35,14 @@ const TopNavbar = ({ userType }) => {
 
   const toggleNotificationsButton = () => {
     setNotificationsButton(!notificationsButton);
-    if (profileButton) toggleProfileButton();
-  };
-
-  const toggleProfileButton = () => {
-    setProfileButton(!profileButton);
-    if (notificationsButton) toggleNotificationsButton();
   };
 
   const toggleFalse = () => {
     setNotificationsButton(false);
-    setProfileButton(false);
   };
   const ShowModal = () => {
     setShowModal(true);
+    setNotificationsButton(false);
   };
 
   const handleModalSubmit = () => {
@@ -64,21 +55,21 @@ const TopNavbar = ({ userType }) => {
   return (
     <Fragment>
       <div className="w-full min-h-16 bg-blue-1 flex items-center px-4  justify-end space-x-6 pr-8 sticky top-0">
-        <FaRegBell
-          className={`w-8 h-8  ${
-            notificationsButton ? "text-orange-1" : "text-white"
-          }`}
-          onClick={() => toggleNotificationsButton()}
-        />
-        <CgProfile
-          className={`w-8 h-8  ${
-            profileButton ? "text-orange-1" : "text-white"
-          }`}
-          onClick={() => toggleProfileButton()}
-        />
         {userType !== "user" && (
-          <h1 className="text-1xl text-white">{userName}</h1>
+          <h1 className="text-2xl text-white">{userName}</h1>
         )}
+        {userType !== "user" && (
+          <FaRegBell
+            className={`w-8 h-8 hover:text-orange-1 ${
+              notificationsButton ? "text-orange-1" : "text-white"
+            }`}
+            onClick={() => toggleNotificationsButton()}
+          />
+        )}
+        <TbLogout
+          className="w-8 h-8 text-white hover:text-orange-1"
+          onClick={() => ShowModal()}
+        />
       </div>
       {notificationsButton && (
         <div className="fixed top-16 right-0 bg-orange-1 min-w-60 w-fit max-h-40 h-fit overflow-auto space-y-1">
@@ -91,13 +82,6 @@ const TopNavbar = ({ userType }) => {
           ) : (
             <h1 className="text-xl">No notifications</h1>
           )}
-        </div>
-      )}
-      {profileButton && (
-        <div className="fixed top-16 right-0 bg-orange-1 h-fit min-w-60">
-          <h1 className="text-xl" onClick={() => ShowModal()}>
-            Logout
-          </h1>
         </div>
       )}
       {showModal && (
