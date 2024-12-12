@@ -28,8 +28,7 @@ const AllExams = () => {
     const fetchExams = async () => {
       try {
         let examsData = [];
-        console.log("Url params: ", urlParam);
-
+        
         if (urlParam) {
           console.log("Apelare API pentru exams by teacher id: " + urlParam);
           examsData = await fetchExamByTeacherId(urlParam); // Call the API function
@@ -85,8 +84,6 @@ const AllExams = () => {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-
-  console.log(exams);
   const currentExams = exams.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.max(1, Math.ceil(exams.length / itemsPerPage));
 
