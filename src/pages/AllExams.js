@@ -28,7 +28,7 @@ const AllExams = () => {
     const fetchExams = async () => {
       try {
         let examsData = [];
-        
+
         if (urlParam) {
           console.log("Apelare API pentru exams by teacher id: " + urlParam);
           examsData = await fetchExamByTeacherId(urlParam); // Call the API function
@@ -89,7 +89,7 @@ const AllExams = () => {
 
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-x-10">
-      <div className="flex-1 bg-blue-1 flex flex-col items-center p-8 shadow-lg">
+      <div className="flex-1 bg-blue-1 flex flex-col items-center pt-5 p-3 shadow-lg">
         <div className="flex flex-row w-full items-center relative">
           <h1 className="text-4xl font-sans text-white absolute left-1/2 transform -translate-x-1/2">
             Exams
@@ -114,8 +114,8 @@ const AllExams = () => {
         <table className="table-auto w-full bg-white rounded-lg mt-5 overflow-hidden">
           <thead className="bg-orange-1 text-white text-lg">
             <tr>
-              <th className="px-4 py-2">Teacher</th>
               <th className="px-4 py-2">Subject</th>
+              <th className="px-4 py-2">Teacher</th>
               <th className="px-4 py-2">Group</th>
               <th className="px-4 py-2">Room</th>
               <th className="px-4 py-2">Duration</th>
@@ -130,8 +130,9 @@ const AllExams = () => {
                   exam.confirmed === true ? "bg-green-100" : ""
                 }`}
               >
-                <td className="px-4 py-2">{exam.teacher.name}</td>
                 <td className="px-4 py-2">{exam.subject}</td>
+
+                <td className="px-4 py-2">{exam.teacher.name}</td>
                 <td className="px-4 py-2">{exam.group}</td>
                 <td className="px-4 py-2">
                   {exam.rooms?.map((room) => room.name).join(", ") || "N/A"}
@@ -140,6 +141,7 @@ const AllExams = () => {
                 <td className="px-4 py-2">
                   {exam.date}, {exam.startTime}
                 </td>
+                {console.log(exam)}
               </tr>
             ))}
           </tbody>

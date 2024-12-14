@@ -3,6 +3,7 @@ import { BsBook } from "react-icons/bs";
 import { IoPeopleSharp, IoPersonSharp } from "react-icons/io5";
 import { CiClock2 } from "react-icons/ci";
 import { FaHouseChimney } from "react-icons/fa6";
+import { MdPersonSearch } from "react-icons/md";
 
 const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
   const [assistant, setAssistant] = useState("");
@@ -22,9 +23,9 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
       return; // Nu trimite date dacă unul dintre câmpuri este gol
     }
     onSubmit({
-      teacherAssistent: assistant, 
-      roomIds: [room], 
-      examId: exam.examId, 
+      teacherAssistent: assistant,
+      roomIds: [room],
+      examId: exam.examId,
     });
   };
 
@@ -59,9 +60,16 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
           </div>
           <h2 className="text-lg">{exam.subject}</h2>
 
-          {/* Group */}
+          {/* Number of students */}
           <div className="flex items-center space-x-2">
             <IoPeopleSharp className="text-white h-6 w-6" />
+            <h2 className="text-lg">Number of students:</h2>
+          </div>
+          <h2 className="text-lg">{exam.numberOfStudents}</h2>
+
+          {/* Group */}
+          <div className="flex items-center space-x-2">
+            <MdPersonSearch className="text-white h-6 w-6" />
             <h2 className="text-lg">Assigned to:</h2>
           </div>
           <h2 className="text-lg">{exam.group}</h2>
@@ -69,9 +77,11 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
           {/* Hour */}
           <div className="flex items-center space-x-2">
             <CiClock2 className="text-white h-6 w-6" />
-            <h2 className="text-lg">Hour:</h2>
+            <h2 className="text-lg">Date:</h2>
           </div>
-          <h2 className="text-lg">{exam.startTime}</h2>
+          <h2 className="text-lg">
+            {exam.startTime.split(":").slice(0, 2).join(":")} {exam.date}
+          </h2>
 
           {/* Assistant Field */}
           <div className="col-span-2">
@@ -104,10 +114,12 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
               onChange={(e) => setRoom(e.target.value)}
               className="w-full p-2 rounded border border-orange-1 bg-[#2e3a59] text-white focus:outline-none focus:ring-2 focus:ring-orange-1"
             >
-              <option value="">Select Room</option>
+              <option value="" disabled>
+                Select Room
+              </option>
               {rooms.map((roomItem) => (
                 <option key={roomItem.roomId} value={roomItem.roomId}>
-                  {roomItem.name}
+                  {roomItem.name} : Capacity-{roomItem.capacity}
                 </option>
               ))}
             </select>
