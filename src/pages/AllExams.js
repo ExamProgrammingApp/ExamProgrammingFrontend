@@ -89,7 +89,7 @@ const AllExams = () => {
 
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-x-10">
-      <div className="flex-1 bg-blue-1 flex flex-col items-center p-8 shadow-lg">
+      <div className="flex-1 bg-blue-1 flex flex-col items-center pt-5 p-3 shadow-lg">
         <div className="flex flex-row w-full items-center relative">
           <h1 className="text-4xl font-sans text-white absolute left-1/2 transform -translate-x-1/2">
             Exams
