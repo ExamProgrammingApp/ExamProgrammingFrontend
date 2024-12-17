@@ -92,7 +92,6 @@ const ScheduleExam = () => {
     setFormData({
       subject: "",
       teacher: "",
-      group: "",
       students: "",
       time: "",
       duration: "",
