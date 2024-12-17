@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { TbPencilMinus } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import Modal from "../components/Modal";
-import { confirmExam, rejectExam, fetchExamsByGroupOrSubject, deleteExam, fetcheExamByTeacherId } from "../api";
+import {
+  confirmExam,
+  rejectExam,
+  fetchExamsByGroupOrSubject,
+  deleteExam,
+  fetcheExamByTeacherId,
+} from "../api";
 import axios from "axios";
 
 const ConfirmExam = () => {
@@ -36,7 +42,9 @@ const ConfirmExam = () => {
 
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/teachers`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/teachers`
+        );
         setTeachers(response.data);
       } catch (error) {
         console.error("Error fetching teachers:", error);
@@ -45,7 +53,9 @@ const ConfirmExam = () => {
 
     const fetchRooms = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/rooms`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/rooms`
+        );
         setRooms(response.data); // Setează camerele în state
       } catch (error) {
         console.error("Error fetching rooms:", error);
@@ -70,7 +80,9 @@ const ConfirmExam = () => {
     console.log("Rejecting exam with ID:", examId);
     try {
       await rejectExam(examId); // API call to delete the exam
-      setExams((prevExams) => prevExams.filter((exam) => exam.examId !== examId));
+      setExams((prevExams) =>
+        prevExams.filter((exam) => exam.examId !== examId)
+      );
     } catch (error) {
       console.error("Error deleting exam:", error);
     }
@@ -80,11 +92,7 @@ const ConfirmExam = () => {
     try {
       console.log("Submitting to confirmExam:", examId);
 
-      await confirmExam(
-        { teacherAssistent, roomIds },
-        examId
-      );
-
+      await confirmExam({ teacherAssistent, roomIds }, examId);
 
       setExams((prevExams) =>
         prevExams.filter((exam) => exam.examId !== examId)
@@ -104,10 +112,10 @@ const ConfirmExam = () => {
           <thead className="bg-orange-1 text-white text-lg">
             <tr>
               <th className="px-4 py-2">Subject</th>
-              <th className="px-4 py-2">Teacher</th>
+              <th className="px-4 py-2">Number of students</th>
               <th className="px-4 py-2">Group</th>
               <th className="px-4 py-2">Hour</th>
-              <th className="px-4 py-2">Room</th>
+              <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -115,14 +123,17 @@ const ConfirmExam = () => {
             {currentExams.map((exam) => (
               <tr
                 key={exam.id}
-                className={`text-center border-b ${exam.confirmed === true ? "bg-green-100" : ""
-                  }`}
+                className={`text-center border-b ${
+                  exam.confirmed === true ? "bg-green-100" : ""
+                }`}
               >
                 <td className="px-4 py-2">{exam.subject}</td>
-                <td className="px-4 py-2">{exam.teacher.name}</td>
+                <td className="px-4 py-2">{exam.numberOfStudents}</td>
                 <td className="px-4 py-2">{exam.group}</td>
-                <td className="px-4 py-2">{exam.startTime}</td>
-                <td className="px-4 py-2">{exam.room || "N/A"}</td>
+                <td className="px-4 py-2">
+                  {exam.startTime.split(":").slice(0, 2).join(":")}
+                </td>
+                <td className="px-4 py-2">{exam.date}</td>
                 <td className="px-4 py-2 flex justify-center space-x-4">
                   <button
                     onClick={() => handleConfirm(exam)}
@@ -132,7 +143,6 @@ const ConfirmExam = () => {
                   </button>
                   <button
                     onClick={() => {
-
                       handleReject(exam.examId);
                     }}
                     className="text-red-600 hover:text-red-800"

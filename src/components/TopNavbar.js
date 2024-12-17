@@ -1,33 +1,22 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { FaRegBell } from "react-icons/fa";
-import { CgProfile } from "react-icons/cg";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import { useAuth } from "../auth/AuthContext";
 import LogoutModal from "./LogoutModal";
 import { useNavigate } from "react-router-dom";
+import { TbLogout } from "react-icons/tb";
 import axios from "axios";
-import { io } from 'socket.io-client';
-
-// const socket = io(process.env.REACT_APP_BACKEND_URL, {
-//   query: {
-//     token: localStorage.getItem("access_token"),
-//   },
-// });
 
 const TopNavbar = ({ userType }) => {
   const [userName, setUserName] = useState("");
   const [notificationsButton, setNotificationsButton] = useState(false);
-  const [profileButton, setProfileButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
   const { logout } = useAuth();
-
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
@@ -52,29 +41,18 @@ const TopNavbar = ({ userType }) => {
     };
 
     fetchNotifications();
-
-    // socket.on('notification', (notification) => {
-    //   console.log('New notification received:', notification);
-    //   // Actualizează notificările
-    //   setNotifications(prevNotifications => [notification, ...prevNotifications]);
-    //   setHasUnreadNotifications(true);  // Setează că există notificări necitite
-    // });
-    fetchNotifications();
-
     const intervalId = setInterval(() => {
       fetchNotifications();
     }, 1000);
     return () => clearInterval(intervalId);
-  }, []);
+
+  }, [location.pathname]);
 
   //Path without navbar
   if (location.pathname === "/auth") return null;
 
-
-
   const toggleNotificationsButton = async () => {
     setNotificationsButton(!notificationsButton);
-    if (profileButton) toggleProfileButton();
 
     // Filtrare notificări necitite la deschiderea listei
     if (!notificationsButton) {
@@ -84,17 +62,12 @@ const TopNavbar = ({ userType }) => {
     }
   };
 
-  const toggleProfileButton = () => {
-    setProfileButton(!profileButton);
-    if (notificationsButton) toggleNotificationsButton();
-  };
-
   const toggleFalse = () => {
     setNotificationsButton(false);
-    setProfileButton(false);
   };
   const ShowModal = () => {
     setShowModal(true);
+    setNotificationsButton(false);
   };
 
   const handleModalSubmit = () => {
@@ -126,7 +99,6 @@ const TopNavbar = ({ userType }) => {
         console.error("Notification not found in state.");
         return;
       }
-      console.log("Notification Type:", notification.type);
 
       if (notification.type === 'rejected')
         navigate("/modify_exam");
@@ -153,29 +125,30 @@ const TopNavbar = ({ userType }) => {
     }
   };
 
+
   return (
     <Fragment>
       <div className="w-full min-h-16 bg-blue-1 flex items-center px-4  justify-end space-x-6 pr-8 sticky top-0">
-        <div className="relative">
+        {userType !== "user" && (
+          <h1 className="text-2xl text-white">{userName}</h1>
+        )}
+        {userType !== "user" && (
+          <div className="relative">
           <FaRegBell
-            className={`w-8 h-8 ${notificationsButton ? "text-orange-1" : "text-white"}`}
-            onClick={() => {
-              toggleNotificationsButton();
-            }}
+            className={`w-8 h-8 hover:text-orange-1 ${
+              notificationsButton ? "text-orange-1" : "text-white"
+            }`}
+            onClick={() => toggleNotificationsButton()}
           />
           {hasUnreadNotifications && (
             <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-red-500"></div> // Bulina roșie
           )}
         </div>
-
-        <CgProfile
-          className={`w-8 h-8  ${profileButton ? "text-orange-1" : "text-white"
-            }`}
-          onClick={() => toggleProfileButton()}
-        />
-        {userType !== "user" && (
-          <h1 className="text-1xl text-white">{userName}</h1>
         )}
+        <TbLogout
+          className="w-8 h-8 text-white hover:text-orange-1"
+          onClick={() => ShowModal()}
+        />
       </div>
       {notificationsButton && (
         <div className="fixed top-16 right-0 bg-orange-1 min-w-60 w-fit max-h-40 h-fit overflow-auto space-y-1">
@@ -192,13 +165,6 @@ const TopNavbar = ({ userType }) => {
           ) : (
             <h1 className="text-xl">No notifications</h1>
           )}
-        </div>
-      )}
-      {profileButton && (
-        <div className="fixed top-16 right-0 bg-orange-1 h-fit min-w-60">
-          <h1 className="text-xl" onClick={() => ShowModal()}>
-            Logout
-          </h1>
         </div>
       )}
       {showModal && (
