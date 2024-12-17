@@ -28,7 +28,7 @@ const AllExams = () => {
     const fetchExams = async () => {
       try {
         let examsData = [];
-        
+
         if (urlParam) {
           console.log("Apelare API pentru exams by teacher id: " + urlParam);
           examsData = await fetchExamByTeacherId(urlParam); // Call the API function
@@ -114,8 +114,8 @@ const AllExams = () => {
         <table className="table-auto w-full bg-white rounded-lg mt-5 overflow-hidden">
           <thead className="bg-orange-1 text-white text-lg">
             <tr>
-              <th className="px-4 py-2">Teacher</th>
               <th className="px-4 py-2">Subject</th>
+              <th className="px-4 py-2">Teacher</th>
               <th className="px-4 py-2">Group</th>
               <th className="px-4 py-2">Room</th>
               <th className="px-4 py-2">Duration</th>
@@ -130,8 +130,9 @@ const AllExams = () => {
                   exam.confirmed === true ? "bg-green-100" : ""
                 }`}
               >
-                <td className="px-4 py-2">{exam.teacher.name}</td>
                 <td className="px-4 py-2">{exam.subject}</td>
+
+                <td className="px-4 py-2">{exam.teacher.name}</td>
                 <td className="px-4 py-2">{exam.group}</td>
                 <td className="px-4 py-2">
                   {exam.rooms?.map((room) => room.name).join(", ") || "N/A"}
@@ -140,6 +141,7 @@ const AllExams = () => {
                 <td className="px-4 py-2">
                   {exam.date}, {exam.startTime}
                 </td>
+                {console.log(exam)}
               </tr>
             ))}
           </tbody>
