@@ -165,7 +165,9 @@ const EditExams = () => {
       const updatedExams = exams.map((exam) =>
         exam.examId === selectedExam.examId ? { ...exam, ...updatedData } : exam
       );
-      setExams(updatedExams);
+      setExams((prevExams) =>
+        prevExams.filter((exam) => exam.examId !== selectedExam.examId)
+      );
       setSelectedExam(null);
       setSelectedExamIndex(null);
       setCalendarDate(null);
@@ -226,11 +228,10 @@ const EditExams = () => {
                     return (
                       <TableRow
                         key={exam.examId}
-                        className={`cursor-pointer ${
-                          selectedExam?.examId === exam.examId
-                            ? "bg-orange-1 text-white"
-                            : "bg-white text-black"
-                        }`}
+                        className={`cursor-pointer ${selectedExam?.examId === exam.examId
+                          ? "bg-orange-1 text-white"
+                          : "bg-white text-black"
+                          }`}
                         onClick={() => SelectExam(exam)}
                       >
                         {columns.map((column) => {
