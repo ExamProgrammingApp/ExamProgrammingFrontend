@@ -89,7 +89,7 @@ const ScheduleExam = () => {
   const handleDateChange = (date) => {
     const localDate = dayjs(date).startOf("day"); // Normalizează la ora locală 00:00
     setFormData((prev) => ({ ...prev, date: localDate }));
-    };
+  };
 
   const handleReset = () => {
     setFormData((prev) => ({
@@ -110,11 +110,11 @@ const ScheduleExam = () => {
       return;
     }
     const localDate = dayjs(formData.date)
-    .hour(parseInt(formData.time.split(":")[0], 10))
-    .minute(parseInt(formData.time.split(":")[1], 10))
-    .second(0)
-    .millisecond(0)
-    .format();
+      .hour(parseInt(formData.time.split(":")[0], 10))
+      .minute(parseInt(formData.time.split(":")[1], 10))
+      .second(0)
+      .millisecond(0)
+      .format();
 
     const examData = {
       subject: formData.subject,
@@ -140,10 +140,11 @@ const ScheduleExam = () => {
     } catch (error) {
       console.error("Error adding exam:", error.response?.data || error.message);
       const errorMessage =
-    error.response?.data?.message ||
-    "Failed to add exam"; 
-    notifyFailed(errorMessage);
+        error.response?.data?.message ||
+        "Failed to add exam";
+      notifyFailed(errorMessage);
     }
+  };
 
   const ServerDay = (props) => {
     const { day, outsideCurrentMonth, ...other } = props;
@@ -391,5 +392,6 @@ const ScheduleExam = () => {
     </div>
   );
 };
+
 
 export default ScheduleExam;
