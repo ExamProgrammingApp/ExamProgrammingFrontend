@@ -10,6 +10,8 @@ import { createExam } from "../api";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+
 
 const ScheduleExam = () => {
   const navigate = useNavigate();
@@ -121,18 +123,21 @@ const ScheduleExam = () => {
   };
 
   const handleDateChange = (date) => {
-    setFormData((prev) => ({ ...prev, date: date }));
+    const localDate = dayjs(date).startOf("day"); // Normalizează la ora locală 00:00
+    setFormData((prev) => ({ ...prev, date: localDate }));
   };
 
   const handleReset = () => {
-    setFormData({
+    setFormData((prev) => ({
       subject: "",
       teacher: "",
       students: "",
-      time: "",
+      time: "08:00",
       duration: "",
       date: null,
-    });
+      group: prev.group,
+    }));
+    console.log("After reset:", formData.group, typeof formData.group);
   };
 
   const handleAddExam = async () => {
@@ -140,6 +145,12 @@ const ScheduleExam = () => {
       notifyFailed("All fields are required");
       return;
     }
+    const localDate = dayjs(formData.date)
+      .hour(parseInt(formData.time.split(":")[0], 10))
+      .minute(parseInt(formData.time.split(":")[1], 10))
+      .second(0)
+      .millisecond(0)
+      .format();
 
     const examData = {
       subject: formData.subject,
@@ -148,22 +159,26 @@ const ScheduleExam = () => {
       numberOfStudents: parseInt(formData.students, 10),
       startTime: formData.time,
       duration: formData.duration,
-      date: formData.date,
+      date: localDate,
     };
+
+    console.log("Exam Data Sent:", examData);
 
     try {
       const token = localStorage.getItem("access_token");
-      console.log("Token", token);
       if (!token) {
         notifyFailed("No authentication token found");
         return;
       }
       const result = await createExam(examData, token);
-      console.log("Exam created successfully:", result);
       notifySuccess("Exam was successfully added");
       handleReset();
     } catch (error) {
-      notifyFailed("Failed to add exam");
+      console.error("Error adding exam:", error.response?.data || error.message);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to add exam";
+      notifyFailed(errorMessage);
     }
   };
 
@@ -189,7 +204,6 @@ const ScheduleExam = () => {
   };
 
   const seeTeacherSchedule = () => {
-    console.log(formData.teacher);
     if (formData.teacher && formData.teacher != null) {
       navigate(`/all_exams?teacher=${formData.teacher}`);
     }
@@ -422,5 +436,6 @@ const ScheduleExam = () => {
     </div>
   );
 };
+
 
 export default ScheduleExam;
