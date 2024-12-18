@@ -8,11 +8,18 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createExam } from "../api";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 
 const ScheduleExam = () => {
+  const navigate = useNavigate();
+  const [teachers, setTeachers] = useState([]);
+  const notifySuccess = (text = "Success") => toast.success(text);
+  const notifyFailed = (text = "Operation Failed") => toast.error(text);
+  const [highlightedDays, setHighlightedDays] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem("access_token"));
   const [formData, setFormData] = useState({
     subject: "",
     teacher: "",
@@ -22,10 +29,35 @@ const ScheduleExam = () => {
     duration: "",
     date: null,
   });
-  const navigate = useNavigate();
 
-  const [teachers, setTeachers] = useState([]);
   useEffect(() => {
+    const fetchUserGroup = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        setToken(token);
+        if (!token) {
+          console.error("No authentication token found");
+          return;
+        }
+
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/students/tokenId`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const userGroup = response.data.group;
+        setFormData((prev) => ({ ...prev, group: userGroup }));
+      } catch (error) {
+        console.error("Error fetching user group:", error);
+      }
+    };
+
+    fetchUserGroup();
+
     const fetchTeachers = async () => {
       try {
         const response = await axios.get(
@@ -38,43 +70,47 @@ const ScheduleExam = () => {
     };
 
     fetchTeachers();
-  }, []);
 
-  useEffect(() => {
-    const fetchUserGroup = async () => {
-      try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-          console.error("No authentication token found");
-          return;
-        }
-
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/students/tokenId`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const userGroup = response.data.group;
-        setFormData((prev) => ({ ...prev, group: userGroup }));
-      } catch (error) {
-        console.error("Error fetching user group:", error);
+    try {
+      if (token) {
+        fetchExams();
       }
-    };
-
-    fetchUserGroup();
+    } catch (error) {
+      console.log("Token sau user nu sunt setate.");
+    }
   }, []);
 
-  const notifySuccess = (text = "Success") => toast.success(text);
-  const notifyFailed = (text = "Operation Failed") => toast.error(text);
-
+  const fetchExams = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/exams`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const examsData = response.data;
+      if (!Array.isArray(examsData)) {
+        console.error("Data is not in the expected format");
+        return;
+      }
+      const examDays = examsData.map((exam) => {
+        const dateObj = new Date(exam.date);
+        return dayjs(dateObj).format("YYYY-MM-DD");
+      });
+      console.log("Exam Days:", examDays);
+      setHighlightedDays(examDays);
+    } catch (error) {
+      console.error("Error fetching exams:", error.response || error.message);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "teacher") {
-
-      const selectedTeacher = teachers.find((teacher) => teacher.teacherId === value);
+      const selectedTeacher = teachers.find(
+        (teacher) => teacher.teacherId === value
+      );
 
       setFormData((prev) => ({
         ...prev,
@@ -147,10 +183,17 @@ const ScheduleExam = () => {
   };
 
   const ServerDay = (props) => {
-    const { day, outsideCurrentMonth, ...other } = props;
+    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+    const formattedDay = dayjs(day).format("YYYY-MM-DD");
+    const isSelected =
+      !outsideCurrentMonth && highlightedDays.includes(formattedDay);
 
     return (
-      <Badge key={props.day.toString()} overlap="circular" badgeContent={false}>
+      <Badge
+        key={props.day.toString()}
+        overlap="circular"
+        badgeContent={isSelected ? "🔴" : undefined}
+      >
         <PickersDay
           {...other}
           outsideCurrentMonth={outsideCurrentMonth}
@@ -224,6 +267,7 @@ const ScheduleExam = () => {
                     slots={{ day: ServerDay }}
                     slotProps={{
                       day: {
+                        highlightedDays,
                         sx: {
                           width: "30px",
                           height: "30px",
