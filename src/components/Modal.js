@@ -11,8 +11,8 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
   const [totalCapacity, setTotalCapacity] = useState(0);
   const [disableConfirmation, setDisableConfirmation] = useState(false);
   const [warningState, setWarningState] = useState({
-    warning: true,
-    warningText: "Selected rooms don't meet student needs.",
+    warning: false,
+    warningText: "",
   });
 
   // Prevent scrolling on the background when modal is open
@@ -24,6 +24,7 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
   }, []);
 
   useEffect(() => {
+    console.log(roomSelections);
     const newCapacity = roomSelections
       .filter((roomId) => roomId)
       .reduce((acc, roomId) => {
@@ -31,25 +32,27 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
         return acc + (room ? room.capacity : 0);
       }, 0);
 
-    const percent = exam.numberOfStudents / newCapacity;
-    if (percent < 0.6) {
-      setDisableConfirmation(false);
-      setWarningState({
-        warning: true,
-        warningText: "Selected rooms exceed student needs.",
-      });
-    } else if (exam.numberOfStudents > newCapacity) {
-      setDisableConfirmation(true);
-      setWarningState({
-        warning: true,
-        warningText: "Selected rooms don't meet student needs.",
-      });
-    } else {
-      setDisableConfirmation(false);
-      setWarningState({
-        warning: false,
-        warningText: "",
-      });
+    if (newCapacity > 0) {
+      const percent = exam.numberOfStudents / newCapacity;
+      if (percent < 0.6) {
+        setDisableConfirmation(false);
+        setWarningState({
+          warning: true,
+          warningText: "Selected rooms exceed student needs.",
+        });
+      } else if (exam.numberOfStudents > newCapacity) {
+        setDisableConfirmation(true);
+        setWarningState({
+          warning: true,
+          warningText: "Selected rooms don't meet student needs.",
+        });
+      } else {
+        setDisableConfirmation(false);
+        setWarningState({
+          warning: false,
+          warningText: "",
+        });
+      }
     }
 
     setTotalCapacity(newCapacity);

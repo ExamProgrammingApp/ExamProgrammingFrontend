@@ -54,37 +54,6 @@ function getDate(date = new Date()) {
   return capitalizedDate;
 }
 
-//GENERATE FALSE EXAMS
-function generateExams() {
-  const subjects = ["IP", "CMO", "SI", "PDB", "SIIEP"];
-  const teachers = ["Andrei", "Marian", "Radu", "Ionut", "Darius"];
-  const groups = ["3141A", "3141B", "3142A", "3142B"];
-  const hour = ["08:00", "10:00", "12:00", "14:00", "16:00"];
-  const room = ["101", "202", "303", "404", "505"];
-
-  function randomPick(list) {
-    const index = Math.floor(Math.random() * list.length);
-    return list[index];
-  }
-
-  const exams = [];
-  for (let i = 0; i < 20; i++) {
-    const examDetails = {
-      exam: randomPick(subjects),
-      teacher: randomPick(teachers),
-      group: randomPick(groups),
-      hour: randomPick(hour),
-      date: `2024-${String(Math.floor(Math.random() * 4) + 9).padStart(
-        2,
-        "0"
-      )}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
-      room: randomPick(room),
-    };
-    exams.push(examDetails);
-  }
-  return exams;
-}
-
 const EditExams = () => {
   const [selectedExamIndex, setSelectedExamIndex] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -228,10 +197,11 @@ const EditExams = () => {
                     return (
                       <TableRow
                         key={exam.examId}
-                        className={`cursor-pointer ${selectedExam?.examId === exam.examId
-                          ? "bg-orange-1 text-white"
-                          : "bg-white text-black"
-                          }`}
+                        className={`cursor-pointer ${
+                          selectedExam?.examId === exam.examId
+                            ? "bg-orange-1 text-white"
+                            : "bg-white text-black"
+                        }`}
                         onClick={() => SelectExam(exam)}
                       >
                         {columns.map((column) => {
