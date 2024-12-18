@@ -41,10 +41,10 @@ const TopNavbar = ({ userType }) => {
     };
 
     fetchNotifications();
-    const intervalId = setInterval(() => {
-      fetchNotifications();
-    }, 1000);
-    return () => clearInterval(intervalId);
+    // const intervalId = setInterval(() => {
+    //   fetchNotifications();
+    // }, 1000);
+    // return () => clearInterval(intervalId);
 
   }, [location.pathname]);
 
@@ -134,16 +134,15 @@ const TopNavbar = ({ userType }) => {
         )}
         {userType !== "user" && (
           <div className="relative">
-          <FaRegBell
-            className={`w-8 h-8 hover:text-orange-1 ${
-              notificationsButton ? "text-orange-1" : "text-white"
-            }`}
-            onClick={() => toggleNotificationsButton()}
-          />
-          {hasUnreadNotifications && (
-            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-red-500"></div> // Bulina roșie
-          )}
-        </div>
+            <FaRegBell
+              className={`w-8 h-8 hover:text-orange-1 ${notificationsButton ? "text-orange-1" : "text-white"
+                }`}
+              onClick={() => toggleNotificationsButton()}
+            />
+            {hasUnreadNotifications && (
+              <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-red-500"></div> // Bulina roșie
+            )}
+          </div>
         )}
         <TbLogout
           className="w-8 h-8 text-white hover:text-orange-1"
