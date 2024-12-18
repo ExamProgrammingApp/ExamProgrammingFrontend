@@ -71,27 +71,6 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
           return acc + (room ? room.capacity : 0);
         }, 0);
 
-      // const percent = exam.numberOfStudents / newCapacity;
-      // if (percent < 0.6) {
-      //   setDisableConfirmation(false);
-      //   setWarningState({
-      //     warning: true,
-      //     warningText: "Selected rooms exceed student needs.",
-      //   });
-      // } else if (exam.numberOfStudents > newCapacity) {
-      //   setDisableConfirmation(true);
-      //   setWarningState({
-      //     warning: true,
-      //     warningText: "Selected rooms don't meet student needs.",
-      //   });
-      // } else {
-      //   setDisableConfirmation(false);
-      //   setWarningState({
-      //     warning: false,
-      //     warningText: "",
-      //   });
-      // }
-
       // Dacă totalCapacity este suficient, optimizăm selecțiile
       if (newCapacity >= exam.numberOfStudents) {
         // Sortăm camerele descrescător după capacitate
@@ -110,28 +89,6 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
             currentCapacity += room.capacity;
           }
         }
-
-        // const percent = exam.numberOfStudents / newCapacity;
-        // if (percent < 0.6) {
-        //   setDisableConfirmation(false);
-        //   setWarningState({
-        //     warning: true,
-        //     warningText: "Selected rooms exceed student needs.",
-        //   });
-        // } else if (exam.numberOfStudents > newCapacity) {
-        //   setDisableConfirmation(true);
-        //   setWarningState({
-        //     warning: true,
-        //     warningText: "Selected rooms don't meet student needs.",
-        //   });
-        // } else {
-        //   setDisableConfirmation(false);
-        //   setWarningState({
-        //     warning: false,
-        //     warningText: "",
-        //   });
-        // }
-
         return optimizedSelections;
       }
 
