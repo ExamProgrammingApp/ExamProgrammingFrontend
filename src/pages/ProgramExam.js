@@ -139,9 +139,11 @@ const ScheduleExam = () => {
       handleReset();
     } catch (error) {
       console.error("Error adding exam:", error.response?.data || error.message);
-    notifyFailed("Failed to add exam");
+      const errorMessage =
+    error.response?.data?.message ||
+    "Failed to add exam"; 
+    notifyFailed(errorMessage);
     }
-  };
 
   const ServerDay = (props) => {
     const { day, outsideCurrentMonth, ...other } = props;
