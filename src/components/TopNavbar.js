@@ -27,14 +27,18 @@ const TopNavbar = ({ userType }) => {
     const fetchNotifications = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/notifications`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/notifications`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setNotifications(response.data); // Stochează notificările în stare
-        setHasUnreadNotifications(response.data.some(notification => !notification.isRead));
-
+        setHasUnreadNotifications(
+          response.data.some((notification) => !notification.isRead)
+        );
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
@@ -45,7 +49,6 @@ const TopNavbar = ({ userType }) => {
       fetchNotifications();
     }, 1000);
     return () => clearInterval(intervalId);
-
   }, [location.pathname]);
 
   //Path without navbar
@@ -56,8 +59,9 @@ const TopNavbar = ({ userType }) => {
 
     // Filtrare notificări necitite la deschiderea listei
     if (!notificationsButton) {
-      setNotifications((prevNotifications) =>
-        prevNotifications.sort((a, b) => Number(a.isRead) - Number(b.isRead)) // Necitite primele
+      setNotifications(
+        (prevNotifications) =>
+          prevNotifications.sort((a, b) => Number(a.isRead) - Number(b.isRead)) // Necitite primele
       );
     }
   };
@@ -100,12 +104,9 @@ const TopNavbar = ({ userType }) => {
         return;
       }
 
-      if (notification.type === 'rejected')
-        navigate("/modify_exam");
-      else if (notification.type === 'approved')
-        navigate("/exams");
-      else if (notification.type === 'pending')
-        navigate("/confirm_exam");
+      if (notification.type === "rejected") navigate("/modify_exam");
+      else if (notification.type === "approved") navigate("/exams");
+      else if (notification.type === "pending") navigate("/confirm_exam");
 
       // Actualizează starea locală pentru a reflecta modificarea
       setNotifications((prevNotifications) =>
@@ -118,32 +119,37 @@ const TopNavbar = ({ userType }) => {
 
       // Elimină notificarea din lista de notificări
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification.notificationId !== notificationId)
+        prevNotifications.filter(
+          (notification) => notification.notificationId !== notificationId
+        )
       );
     } catch (error) {
       console.error("Error marking notification as read:", error);
     }
   };
 
-
   return (
     <Fragment>
       <div className="w-full min-h-16 bg-blue-1 flex items-center px-4  justify-end space-x-6 pr-8 sticky top-0">
         {userType !== "user" && (
-          <h1 className="text-2xl text-white">{userName}</h1>
+          <h1 className="text-2xl text-white">
+            {userType.charAt(0).toUpperCase() + userType.slice(1)}
+            {" : "}
+            {userName}
+          </h1>
         )}
         {userType !== "user" && (
           <div className="relative">
-          <FaRegBell
-            className={`w-8 h-8 hover:text-orange-1 ${
-              notificationsButton ? "text-orange-1" : "text-white"
-            }`}
-            onClick={() => toggleNotificationsButton()}
-          />
-          {hasUnreadNotifications && (
-            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-red-500"></div> // Bulina roșie
-          )}
-        </div>
+            <FaRegBell
+              className={`w-8 h-8 hover:text-orange-1 ${
+                notificationsButton ? "text-orange-1" : "text-white"
+              }`}
+              onClick={() => toggleNotificationsButton()}
+            />
+            {hasUnreadNotifications && (
+              <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-red-500"></div> // Bulina roșie
+            )}
+          </div>
         )}
         <TbLogout
           className="w-8 h-8 text-white hover:text-orange-1"
@@ -156,8 +162,12 @@ const TopNavbar = ({ userType }) => {
             notifications.map((notification, index) => (
               <h1
                 key={index}
-                className={`text-xl ${notification.isRead ? "text-gray-500" : "text-black"}`}
-                onClick={() => handleNotificationClick(notification.notificationId)} // Marcare notificare ca citită
+                className={`text-xl ${
+                  notification.isRead ? "text-gray-500" : "text-black"
+                }`}
+                onClick={() =>
+                  handleNotificationClick(notification.notificationId)
+                } // Marcare notificare ca citită
               >
                 {notification.message}
               </h1>
