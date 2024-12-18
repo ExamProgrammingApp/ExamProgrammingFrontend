@@ -9,7 +9,11 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
   const [assistant, setAssistant] = useState("");
   const [roomSelections, setRoomSelections] = useState([""]);
   const [totalCapacity, setTotalCapacity] = useState(0);
-  const [warning, setWarning] = useState(false);
+  const [disableConfirmation, setDisableConfirmation] = useState(false);
+  const [warningState, setWarningState] = useState({
+    warning: true,
+    warningText: "Selected rooms don't meet student needs.",
+  });
 
   // Prevent scrolling on the background when modal is open
   useEffect(() => {
@@ -19,15 +23,37 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (
-  //     roomSelections.some((roomId) => roomId) &&
-  //     totalCapacity > 0 &&
-  //     exam.numberOfStudents / totalCapacity < 0.75
-  //   )
-  //     setWarning(true);
-  //   else setWarning(false);
-  // }, [roomSelections]);
+  useEffect(() => {
+    const newCapacity = roomSelections
+      .filter((roomId) => roomId)
+      .reduce((acc, roomId) => {
+        const room = rooms.find((room) => room.roomId === roomId);
+        return acc + (room ? room.capacity : 0);
+      }, 0);
+
+    const percent = exam.numberOfStudents / newCapacity;
+    if (percent < 0.6) {
+      setDisableConfirmation(false);
+      setWarningState({
+        warning: true,
+        warningText: "Selected rooms exceed student needs.",
+      });
+    } else if (exam.numberOfStudents > newCapacity) {
+      setDisableConfirmation(true);
+      setWarningState({
+        warning: true,
+        warningText: "Selected rooms don't meet student needs.",
+      });
+    } else {
+      setDisableConfirmation(false);
+      setWarningState({
+        warning: false,
+        warningText: "",
+      });
+    }
+
+    setTotalCapacity(newCapacity);
+  }, [roomSelections, exam.numberOfStudents, rooms]);
 
   // Adăugare câmp select pentru camere noi dacă este necesar
 
@@ -44,19 +70,6 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
           const room = rooms.find((room) => room.roomId === roomId);
           return acc + (room ? room.capacity : 0);
         }, 0);
-
-      const percent = exam.numberOfStudents / newCapacity;
-      const condition = percent < 0.75;
-      const shouldShowWarning = newCapacity > 0 && condition;
-      setWarning(shouldShowWarning);
-      console.log("SHOW WARNING", shouldShowWarning);
-
-      console.log(
-        "Capacitate calculată:",
-        newCapacity,
-        "Selecții:",
-        updatedSelections
-      );
 
       // Dacă totalCapacity este suficient, optimizăm selecțiile
       if (newCapacity >= exam.numberOfStudents) {
@@ -76,7 +89,6 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
             currentCapacity += room.capacity;
           }
         }
-
         return optimizedSelections;
       }
 
@@ -108,12 +120,13 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
       console.error(
         "Invalid selection: Assistant or insufficient room capacity."
       );
+    } else {
+      onSubmit({
+        teacherAssistent: assistant,
+        roomIds: roomSelections.filter((roomId) => roomId), // Eliminăm sălile necompletate
+        examId: exam.examId,
+      });
     }
-    onSubmit({
-      teacherAssistent: assistant,
-      roomIds: roomSelections.filter((roomId) => roomId), // Eliminăm sălile necompletate
-      examId: exam.examId,
-    });
   };
 
   const handleReset = () => {
@@ -202,7 +215,7 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
                   value={roomId}
                   onChange={(e) => handleRoomChange(index, e.target.value)}
                   className={`w-full p-2 rounded border border-orange-1 bg-[#2e3a59] text-white focus:outline-none focus:ring-2 focus:ring-orange-1 ${
-                    warning
+                    warningState.warning
                       ? "border-red-700 focus:ring-red-700"
                       : " border-orange-1"
                   }`}
@@ -226,12 +239,12 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
             ))}
           </div>
         </div>
-        {warning && (
+        {warningState.warning && (
           <h1 className="text-orange-1 text-md text-center pb-3">
-            Selected capacity exceeds student needs.
+            {warningState.warningText}
           </h1>
         )}
-        {!warning && <div className="py-2"></div>}
+        {!warningState.warning && <div className="py-2"></div>}
 
         {/* Action Buttons */}
         <div className="flex justify-between">
@@ -245,6 +258,7 @@ const Modal = ({ exam, onClose, onSubmit, teachers, rooms }) => {
           <button
             onClick={handleSubmit}
             className="px-6 py-2 bg-orange-1 text-[#1b1e3d] rounded-lg hover:bg-orange-1 transition"
+            disabled={disableConfirmation}
           >
             CONFIRM
           </button>
