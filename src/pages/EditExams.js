@@ -60,7 +60,7 @@ const EditExams = () => {
   const [calendarDate, setCalendarDate] = useState(null);
   const [selectedExam, setSelectedExam] = useState(null);
   const [examDate, setExamDate] = useState(getDate());
-  const [exams, setExams] = useState([]);
+  const [exams, setExams] = useState([""]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const notify = (text = "Success") => toast.success(text);
@@ -151,11 +151,6 @@ const EditExams = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
   const SelectExam = (exam, index) => {
     setSelectedExam(exam);
     setSelectedExamIndex(index);
@@ -168,8 +163,8 @@ const EditExams = () => {
   return (
     <div className="h-[calc(100vh-64px)] w-auto bg-gray-1 flex p-5 space-y-5">
       <div className="bg-blue-1 w-full h-full p-2 flex flex-col justify-center">
-        <div className="flex flex-row justify-evenly items-center">
-          <div className="w-2/3 p-2 ">
+        <div className="flex flex-row justify-evenly">
+          <div className="w-2/3 p-2">
             <h1 className="text-4xl font-sans text-white pb-5 text-center">
               Modify an unconfirmed exam
             </h1>
@@ -193,51 +188,61 @@ const EditExams = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {exams.map((exam, index) => {
-                    return (
-                      <TableRow
-                        key={exam.examId}
-                        className={`cursor-pointer ${
-                          selectedExam?.examId === exam.examId
-                            ? "bg-orange-1 text-white"
-                            : "bg-white text-black"
-                        }`}
-                        onClick={() => SelectExam(exam)}
-                      >
-                        {columns.map((column) => {
-                          let value;
-                          if (column.id === "teacher") {
-                            value = exam.teacher
-                              ? exam.teacher.name
-                              : "No Teacher";
-                          } else if (column.id === "exam") {
-                            value = exam.subject || exam.exam || "No Subject";
-                          } else {
-                            value = exam[column.id];
-                          }
+                  {exams.length === 0 || exams[0] === "" ? (
+                    <TableRow className="bg-white text-black">
+                      <TableCell colSpan={columns.length} align="center">
+                        No exams found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    exams
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((exam, index) => (
+                        <TableRow
+                          key={exam.examId}
+                          className={`cursor-pointer ${
+                            selectedExam?.examId === exam.examId
+                              ? "bg-orange-1 text-white"
+                              : "bg-white text-black"
+                          }`}
+                          onClick={() => SelectExam(exam)}
+                        >
+                          {columns.map((column) => {
+                            let value;
+                            if (column.id === "teacher") {
+                              value = exam.teacher
+                                ? exam.teacher.name
+                                : "No Teacher";
+                            } else if (column.id === "exam") {
+                              value = exam.subject || exam.exam || "No Subject";
+                            } else {
+                              value = exam[column.id];
+                            }
 
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.id === "date"
-                                ? dayjs(exam[column.id]).format("DD-MM-YYYY")
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.id === "date"
+                                  ? dayjs(exam[column.id]).format("DD-MM-YYYY")
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10]}
+              rowsPerPageOptions={rowsPerPage}
               component="div"
               count={exams.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
               className="bg-gray-1 border-t-[2px] border-blue-1"
             />
           </div>
@@ -318,7 +323,7 @@ const EditExams = () => {
             className="bg-orange-1 w-32 h-10 rounded-full"
             onClick={handleEditClick}
           >
-            Edit
+            Confirm
           </button>
         </div>
       </div>

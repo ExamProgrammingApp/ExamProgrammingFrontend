@@ -120,38 +120,49 @@ const ConfirmExam = () => {
             </tr>
           </thead>
           <tbody>
-            {currentExams.map((exam) => (
-              <tr
-                key={exam.id}
-                className={`text-center border-b ${
-                  exam.confirmed === true ? "bg-green-100" : ""
-                }`}
-              >
-                <td className="px-4 py-2">{exam.subject}</td>
-                <td className="px-4 py-2">{exam.numberOfStudents}</td>
-                <td className="px-4 py-2">{exam.group}</td>
-                <td className="px-4 py-2">
-                  {exam.startTime.split(":").slice(0, 2).join(":")}
-                </td>
-                <td className="px-4 py-2">{exam.date}</td>
-                <td className="px-4 py-2 flex justify-center space-x-4">
-                  <button
-                    onClick={() => handleConfirm(exam)}
-                    className="text-green-600 hover:text-green-800"
-                  >
-                    <TbPencilMinus size={24} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleReject(exam.examId);
-                    }}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <IoClose size={24} />
-                  </button>
+            {exams.length === 0 ||
+            exams[0] === "" ||
+            currentExams.length === 0 ||
+            currentExams[0] === "" ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4 ">
+                  No exams found
                 </td>
               </tr>
-            ))}
+            ) : (
+              currentExams.map((exam) => (
+                <tr
+                  key={exam.id}
+                  className={`text-center border-b ${
+                    exam.confirmed === true ? "bg-green-100" : ""
+                  }`}
+                >
+                  <td className="px-4 py-2">{exam.subject}</td>
+                  <td className="px-4 py-2">{exam.numberOfStudents}</td>
+                  <td className="px-4 py-2">{exam.group}</td>
+                  <td className="px-4 py-2">
+                    {exam.startTime.split(":").slice(0, 2).join(":")}
+                  </td>
+                  <td className="px-4 py-2">{exam.date}</td>
+                  <td className="px-4 py-2 flex justify-center space-x-4">
+                    <button
+                      onClick={() => handleConfirm(exam)}
+                      className="text-green-600 hover:text-green-800"
+                    >
+                      <TbPencilMinus size={24} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleReject(exam.examId);
+                      }}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <IoClose size={24} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
         <div className="flex justify-between mt-5 space-x-8 items-center">
