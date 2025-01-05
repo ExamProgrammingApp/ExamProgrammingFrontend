@@ -10,8 +10,6 @@ import { createExam } from "../api";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-
 
 const ScheduleExam = () => {
   const navigate = useNavigate();
@@ -174,10 +172,12 @@ const ScheduleExam = () => {
       notifySuccess("Exam was successfully added");
       handleReset();
     } catch (error) {
-      console.error("Error adding exam:", error.response?.data || error.message);
+      console.error(
+        "Error adding exam:",
+        error.response?.data || error.message
+      );
       const errorMessage =
-        error.response?.data?.message ||
-        "Failed to add exam";
+        error.response?.data?.message || "Failed to add exam";
       notifyFailed(errorMessage);
     }
   };
@@ -436,6 +436,5 @@ const ScheduleExam = () => {
     </div>
   );
 };
-
 
 export default ScheduleExam;
