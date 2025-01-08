@@ -50,7 +50,6 @@ const TopNavbar = ({ userType }) => {
     //   fetchNotifications();
     // }, 1000);
     // return () => clearInterval(intervalId);
-
   }, [location.pathname]);
 
   //Path without navbar
@@ -135,7 +134,7 @@ const TopNavbar = ({ userType }) => {
       <div className="w-full min-h-16 bg-blue-1 flex items-center px-4  justify-end space-x-6 pr-8 sticky top-0">
         {userType !== "user" && (
           <h1 className="text-2xl text-white">
-            {userType.charAt(0).toUpperCase() + userType.slice(1)}
+            {userType && userType.charAt(0).toUpperCase() + userType.slice(1)}
             {" : "}
             {userName}
           </h1>
@@ -143,9 +142,9 @@ const TopNavbar = ({ userType }) => {
         {userType !== "user" && (
           <div className="relative">
             <FaRegBell
-              className={`w-8 h-8 hover:text-orange-1 ${notificationsButton ? "text-orange-1" : "text-white"
-                }`}
-
+              className={`w-8 h-8 hover:text-orange-1 ${
+                notificationsButton ? "text-orange-1" : "text-white"
+              }`}
               onClick={() => toggleNotificationsButton()}
             />
             {hasUnreadNotifications && (
