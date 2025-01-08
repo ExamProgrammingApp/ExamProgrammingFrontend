@@ -23,7 +23,7 @@ function getData(setGroups, setTeachers, setSubjects, setRooms) {
     });
 }
 
-const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
+const FilterModal = ({ filters, onClose, onSubmit }) => {
   const [groups, setGroups] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -44,6 +44,25 @@ const FilterModal = ({ onClose, onSubmit, usedFilters }) => {
     //GET DATA FROM API
 
     getData(setGroups, setTeachers, setSubjects, setRooms);
+
+    filters.forEach(({ filter, value }) => {
+      if (filter === "Group" && value) {
+        setGroupChecked(true);
+        setSelectedGroup(value);
+      }
+      if (filter === "Teacher" && value) {
+        setTeacherChecked(true);
+        setSelectedTeacher(value);
+      }
+      if (filter === "Subject" && value) {
+        setSubjectChecked(true);
+        setSelectedSubject(value);
+      }
+      if (filter === "Room" && value) {
+        setRoomChecked(true);
+        setSelectedRoom(value);
+      }
+    });
 
     document.body.style.overflow = "hidden";
     return () => {
