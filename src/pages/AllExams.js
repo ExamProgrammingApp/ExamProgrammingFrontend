@@ -17,6 +17,7 @@ const AllExams = () => {
   const [originalExams, setOriginalExams] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const [filters, setFilters] = useState([]);
   const itemsPerPage = 10;
 
   const location = useLocation();
@@ -54,10 +55,13 @@ const AllExams = () => {
   const handleResetFilters = () => {
     setExams(originalExams); // Reset exams to unfiltered data
     setCurrentPage(1); // Optionally reset the page to 1
+    setFilters([]);
   };
 
   const handleModalSubmit = (filters) => {
     let filteredExams = [...exams];
+    setFilters(filters);
+    console.log("FILTERSSSS", filters);
 
     filters.forEach(({ filter, value }) => {
       if (filter === "Group" && value) {
@@ -168,6 +172,7 @@ const AllExams = () => {
 
         {showModal && urlParam == null && (
           <FilterModal
+            filters={filters}
             onClose={() => setShowModal(false)}
             onSubmit={handleModalSubmit}
           />
